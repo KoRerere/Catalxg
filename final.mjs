@@ -1,0 +1,13 @@
+import puppeteer from 'puppeteer';
+const browser = await puppeteer.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless:'new', args:['--no-sandbox']});
+const page = await browser.newPage();
+await page.setViewport({width:414,height:900,deviceScaleFactor:2,isMobile:true,hasTouch:true});
+await page.goto('http://localhost:4173/', {waitUntil:'networkidle2', timeout:60000});
+await page.evaluate(()=>new Promise(r=>setTimeout(r,2000)));
+const el=await page.$('.fusion-text-8');
+await el.scrollIntoView();
+await page.evaluate(()=>new Promise(r=>setTimeout(r,500)));
+const box=await el.boundingBox();
+await page.screenshot({path:'_after-text.png', clip:{x:0,y:Math.max(0,box.y-40),width:414,height:box.height+80}});
+await browser.close();
+console.log('box',JSON.stringify(box),'saved _after-text.png');

@@ -1,0 +1,273 @@
+:root { --local-accent: #0c9031; --local-ink: #2d3a35; }
+html { scroll-behavior: smooth; }
+body { animation: local-fade-in .35s ease both; }
+@keyframes local-fade-in { from { opacity: .6; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+/* The original search submit relies on a font glyph that is absent offline. */
+.fusion-search-button .fusion-search-submit {
+  color: transparent !important;
+  font-size: 0 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.8' cy='10.8' r='5.8'/%3E%3Cpath d='m16 16 4 4'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 20px 20px !important;
+}
+/* Keep the WooCommerce toolbar controls visible when the icon font is absent. */
+.catalog-ordering .order-dropdown > li::after {
+  content: "" !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23222222' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / 16px 16px no-repeat !important;
+}
+.catalog-ordering .order li a {
+  color: transparent !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23222222' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v16M6 14l6 6 6-6'/%3E%3C/svg%3E") center / 19px 19px no-repeat !important;
+}
+.fusion-grid-view .awb-icon-grid,
+.fusion-list-view .awb-icon-list {
+  width: 24px !important;
+  height: 24px !important;
+  margin: 0 !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  font-size: 0 !important;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+}
+.fusion-grid-view .awb-icon-grid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23222222'%3E%3Crect x='3' y='3' width='5' height='5' rx='0.5'/%3E%3Crect x='10' y='3' width='5' height='5' rx='0.5'/%3E%3Crect x='17' y='3' width='5' height='5' rx='0.5'/%3E%3Crect x='3' y='10' width='5' height='5' rx='0.5'/%3E%3Crect x='10' y='10' width='5' height='5' rx='0.5'/%3E%3Crect x='17' y='10' width='5' height='5' rx='0.5'/%3E%3Crect x='3' y='17' width='5' height='5' rx='0.5'/%3E%3Crect x='10' y='17' width='5' height='5' rx='0.5'/%3E%3Crect x='17' y='17' width='5' height='5' rx='0.5'/%3E%3C/svg%3E");
+}
+.fusion-list-view .awb-icon-list {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23222222' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M9 6h12M9 12h12M9 18h12'/%3E%3Ccircle cx='4' cy='6' r='1' fill='%23222222'/%3E%3Ccircle cx='4' cy='12' r='1' fill='%23222222'/%3E%3Ccircle cx='4' cy='18' r='1' fill='%23222222'/%3E%3C/svg%3E");
+}
+.local-cart-toggle { position: fixed; right: 22px; bottom: 20px; z-index: 100000; width: 54px; height: 54px; border: 0; border-radius: 50%; background: var(--local-accent); color: #fff; box-shadow: 0 9px 25px rgba(0,0,0,.22); font-size: 20px; cursor: pointer; transition: transform .2s ease, background .2s ease; }
+.local-cart-toggle:hover { transform: translateY(-3px) scale(1.04); background: #0a6b26; }
+.local-cart-count { display: grid; place-items: center; position: absolute; top: -5px; right: -4px; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 12px; background: #1f2b26; color: #fff; font: 700 11px/1 Arial, sans-serif; }
+.local-cart-panel { position: fixed; z-index: 100001; right: 18px; bottom: 84px; width: min(390px, calc(100vw - 36px)); max-height: 72vh; overflow: auto; padding: 22px; background: #fff; color: var(--local-ink); border-radius: 8px; box-shadow: 0 18px 50px rgba(0,0,0,.25); transform: translateY(18px); opacity: 0; pointer-events: none; transition: .28s ease; }
+.local-cart-panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.local-cart-panel h3 { margin: 0 0 16px; font-size: 22px; }
+.local-cart-item { display: grid; grid-template-columns: 1fr auto; gap: 7px 14px; padding: 13px 0; border-top: 1px solid #ececec; font-size: 14px; }
+.local-cart-item button, .local-cart-panel a { border: 0; background: none; color: var(--local-accent); cursor: pointer; font: inherit; text-decoration: none; }
+.local-cart-panel .local-checkout { display: block; margin-top: 16px; padding: 13px; background: var(--local-accent); color: #fff; text-align: center; text-transform: uppercase; font-weight: 700; border-radius: 4px; }
+.local-toast { position: fixed; z-index: 100002; left: 50%; bottom: 28px; transform: translate(-50%, 100px); padding: 13px 20px; background: #1f2b26; color: #fff; border-radius: 5px; opacity: 0; box-shadow: 0 9px 25px rgba(0,0,0,.18); transition: .28s ease; }
+.local-toast.show { transform: translate(-50%, 0); opacity: 1; }
+.local-order-note { margin: 0 0 18px; padding: 14px 16px; border-left: 3px solid #65bc7b; background: #f3fbf5; color: #31533b; }
+.local-checkout-shell { max-width: 1060px; margin: 54px auto; padding: 0 24px; color: var(--local-ink); }
+.local-checkout-shell h1 { margin: 0 0 10px; font-size: 34px; }
+.local-checkout-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(260px, .75fr); gap: 34px; margin-top: 28px; }
+.local-checkout-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.local-checkout-form label { display: grid; gap: 7px; font-size: 13px; font-weight: 700; }
+.local-checkout-form label.full { grid-column: 1 / -1; }
+.local-checkout-form input { min-height: 43px; box-sizing: border-box; padding: 9px 11px; border: 1px solid #d9d9d9; border-radius: 3px; font: inherit; }
+.local-checkout-form button { grid-column: 1 / -1; padding: 15px 18px; border: 0; border-radius: 3px; background: var(--local-accent); color: #fff; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background .2s ease; }
+.local-checkout-form button:hover { background: #0a6b26; }
+.local-checkout-summary { height: fit-content; padding: 22px; background: #f4f6f3; border-radius: 6px; }
+.local-checkout-summary h3 { margin-top: 0; }
+.local-checkout-summary p { display: flex; justify-content: space-between; gap: 18px; padding: 9px 0; margin: 0; border-bottom: 1px solid #e1e1e1; }
+@media (max-width: 720px) { .local-checkout-grid { grid-template-columns: 1fr; } .local-checkout-form { grid-template-columns: 1fr; } .local-checkout-form label { grid-column: 1 / -1; } }
+
+/* ------------------------------------------------------------------
+   Hero pentagon modules (homepage): regular pentagon backdrop with
+   contrast stripes and a big background word, product nested inside
+   with its lower part cut by the pentagon's bottom edge.
+   ------------------------------------------------------------------ */
+.hero-pent { position: relative; width: 100%; max-width: 520px; margin: 0 auto; aspect-ratio: 460 / 660; overflow: hidden; }
+.hero-pent-shape { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero-pent--green .hero-pent-shape polygon { fill: #0c9031; }
+.hero-pent--amber .hero-pent-shape polygon { fill: #ebac77; }
+/* Understated slashes behind the product: three parallel 45° white bands
+   running all the way across the pentagon, clipped to its silhouette. Both
+   modules share the same direction for a subtle repeating texture. */
+.hero-pent-stripes-clip {
+  position: absolute; inset: 0;
+  clip-path: polygon(50% 31.8%, 99.8% 57.1%, 80.9% 97.9%, 19.1% 97.9%, 0.2% 57.1%);
+  pointer-events: none;
+}
+.hero-pent-stripes {
+  position: absolute; inset: -6% -16%;
+  display: flex; justify-content: center; gap: 28%;
+  transform: rotate(var(--stripe-angle, 46deg));
+}
+.hero-pent-stripes span { flex: 1; }
+.hero-pent-stripes span { background: rgba(255, 255, 255, .5); }
+.hero-pent--green .hero-pent-stripes span { --stripe-angle: 46deg; }
+.hero-pent--amber .hero-pent-stripes span { --stripe-angle: 46deg; }
+.hero-pent-word {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 4.5%;
+  /* clip the word to the pentagon silhouette so it never bleeds outside */
+  clip-path: polygon(50% 31.8%, 99.8% 57.1%, 80.9% 97.9%, 19.1% 97.9%, 0.2% 57.1%);
+  pointer-events: none;
+}
+.hero-pent-word b {
+  font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: .01em;
+  white-space: nowrap;
+}
+.hero-pent--green .hero-pent-word b { color: #a8dcc8; opacity: .55; }
+.hero-pent--amber .hero-pent-word b { color: #14523f; opacity: .4; }
+.hero-pent-product {
+  position: absolute; left: 50%; bottom: -2.5%;
+  height: 76%; width: auto; transform: translateX(-50%);
+  /* clip the box at the pentagon's bottom edge (14/660 below, minus the
+     2.5% overhang => 6.08% of the image height) */
+  clip-path: inset(0 0 6.08% 0);
+}
+
+/* ------------------------------------------------------------------
+   EU clinic restyle — palette + tone only, layout untouched.
+   The Avada theme exposes its palette as CSS custom properties and
+   every page loads this file after the theme CSS, so :root-level
+   overrides win the cascade without touching the minified theme CSS.
+   --awb-color4: accent text / links / button hover
+   --awb-color5: primary button fill
+   ------------------------------------------------------------------ */
+:root {
+  --awb-color4: #0a6b26; --awb-color4-h: 137; --awb-color4-s: 45%; --awb-color4-l: 23%; --awb-color4-a: 100%;
+  --awb-color5: #0c9031; --awb-color5-h: 137; --awb-color5-s: 45%; --awb-color5-l: 31%; --awb-color5-a: 100%;
+  --awb-color6: #4a5450;
+  --awb-color7: #2d3a35;
+  --awb-color8: #1f2b26;
+  --awb-color: #233029;
+  --wp--preset--color--awb-color-4: var(--awb-color4);
+  --wp--preset--color--awb-color-5: var(--awb-color5);
+  --bg_color: #f4f6f3;
+  --bg_pattern: none;
+}
+body { background-color: var(--bg_color) !important; background-image: none !important; background-blend-mode: normal !important; color: var(--awb-color7); }
+h1, h2, h3, h4, h5, h6 { font-weight: 600; letter-spacing: 0; }
+.fusion-button, .woocommerce a.button, .woocommerce button.button, .woocommerce input.button,
+.woocommerce #respond input#submit, .woocommerce #place_order, .wpcf7-submit {
+  text-transform: none; font-weight: 600; letter-spacing: 0; border-radius: 6px;
+}
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="password"], textarea, select { border-radius: 4px; }
+/* Dark bands (deep green-black sections): remap accents to light green so
+   highlight text and links keep contrast. Custom properties inherit, so
+   redefining them on the section cascades to everything inside it. */
+.fusion-fullwidth[style*="--awb-background-color:#1f2b26"] {
+  --awb-color4: #8fe6ab; --awb-color4-h: 137; --awb-color4-s: 70%; --awb-color4-l: 73%; --awb-color4-a: 100%;
+  --awb-color5: #a9f0c4; --awb-color5-h: 137; --awb-color5-s: 72%; --awb-color5-l: 80%; --awb-color5-a: 100%;
+  --wp--preset--color--awb-color-4: var(--awb-color4);
+  --wp--preset--color--awb-color-5: var(--awb-color5);
+  --link_color: #a8dcc8;
+}
+/* White surfaces nested inside the dark bands (product cards, light boxes)
+   get the standard dark-green accents back so text stays readable. */
+.fusion-fullwidth[style*="--awb-background-color:#1f2b26"] :is(.product, [style*="--awb-background-color:#ffffff"], [style*="--awb-background-color:var(--awb-color1)"], [style*="background-color:#ffffff"]),
+.fusion-fullwidth[style*="--awb-background-color:#1f2b26"] :is(.product, [style*="--awb-background-color:#ffffff"], [style*="--awb-background-color:var(--awb-color1)"], [style*="background-color:#ffffff"]) * {
+  --awb-color4: #0a6b26; --awb-color4-h: 137; --awb-color4-s: 45%; --awb-color4-l: 23%; --awb-color4-a: 100%;
+  --awb-color5: #0c9031; --awb-color5-h: 137; --awb-color5-s: 45%; --awb-color5-l: 31%; --awb-color5-a: 100%;
+  --wp--preset--color--awb-color-4: var(--awb-color4);
+  --wp--preset--color--awb-color-5: var(--awb-color5);
+  --link_color: #0c9031;
+}
+/* Prices are computed from shifted HSL components that land on muddy hues
+   with the green palette — pin them to the brand green instead. The theme
+   colors the inner .amount spans directly, so override at that level. */
+body .price, body .price .amount, body .price ins .amount,
+body .fusion-body .fusion-woo-price-tb .price .amount { color: var(--local-accent) !important; }
+body .price del, body .price del .amount { color: #8a9490 !important; }
+
+/* ------------------------------------------------------------------
+   Compact top navigation: tighter header padding + smaller logo.
+   The header row's padding comes from inline --awb-padding-* vars,
+   so the consumed padding property is overridden directly.
+   ------------------------------------------------------------------ */
+.fusion-tb-header .fusion-builder-row-1 { padding-top: 8px !important; padding-bottom: 8px !important; }
+.fusion-tb-header .fusion-logo img { max-height: 60px; width: auto; height: auto; }
+/* Menu items carry their own 94px --nav_height; bring them down to match. */
+.fusion-tb-header .fusion-main-menu > ul > li > a {
+  height: auto !important; line-height: 1.4 !important;
+  padding-top: 12px !important; padding-bottom: 12px !important;
+}
+/* Highlighted title link on the dark "why" band: brighter green by
+   default, a step darker on hover. */
+.fusion-body h2.catalxg-why-title a,
+body h2.catalxg-why-title a { color: #3fae5e; }
+.fusion-body h2.catalxg-why-title a:hover,
+body h2.catalxg-why-title a:hover { color: #33924e; }
+/* Product image hover overlay: the theme ships an olive #aad75d→#d1e990
+   gradient. Replace with the brand green, deeper at the bottom. */
+.fusion-image-wrapper .fusion-rollover,
+.fusion-rollover {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(12, 144, 49, 0.90) 0%,
+    rgba(12, 144, 49, 0.85) 55%,
+    rgba(12, 144, 49, 0.80) 100%
+  ) !important;
+}
+
+/* Green promo bar marquee: kill the thin white seam that the theme's page
+   background can show along the bar's top edge. A border-colour matched to
+   the bar's own background covers the gap without changing the layout. */
+.fusion-fullwidth[style*="--awb-background-color:#0c9031"] {
+  border-top: 1px solid #0c9031 !important;
+  margin-top: -1px !important;
+}
+
+/* Homepage "Welcome box" duo (two product silhouettes masked from
+   Welcome-box.png). The mask clips the image to the bottle shapes, so the
+   gaps around and between them expose the imageframe backdrop. Give that
+   backdrop a green gradient instead of a flat dark band so the shadow has
+   depth: brighter brand green where the light falls (centre), fading to the
+   band's own deep green at the top and bottom. */
+.fusion-image-element[style*="mask-duo"] .fusion-imageframe.has-mask {
+  background-color: #1f2b26;
+  background-image: linear-gradient(
+    180deg,
+    rgba(31, 43, 38, 0) 0%,
+    rgba(12, 144, 49, 0.35) 46%,
+    rgba(168, 220, 200, 0.20) 62%,
+    rgba(31, 43, 38, 0) 100%
+  );
+}
+
+/* ------------------------------------------------------------------
+   "Best selling products" band — card grid layout only.
+   The tree promo column is defined as 25% and the product-card grid as
+   75%, but the 75% product-grid columns render at full width, which
+   wraps them onto their own row. Pin those two grids back to 75% so the
+   tree card (25%) and product grid (75%) sit side-by-side in one row,
+   matching the reference grid. Content, colours and spacing untouched.
+   ------------------------------------------------------------------ */
+.fusion-builder-row-5 .fusion-builder-column-11,
+.fusion-builder-row-5 .fusion-builder-column-16 {
+  width: 75% !important;
+  max-width: 75% !important;
+  flex: 0 0 75% !important;
+}
+/* When the product-grid column is pinned to 75%, the theme's image wrapper
+   collapses to height:0 and crops the product photo. Restore the natural
+   block flow inside these product cards so the image carries its own height
+   again (the gallery child is what needs to join the flow). */
+.fusion-builder-row-5 .fusion-classic-product-image-wrapper {
+  display: block !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+.fusion-builder-row-5 .fusion-classic-product-image-wrapper .woocommerce-product-gallery__image {
+  position: static !important;
+  display: block !important;
+  height: auto !important;
+}
+.fusion-builder-row-5 .fusion-classic-product-image-wrapper img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+}
+/* Product cards inside the grid: the theme ships them as a tight CSS grid
+   (each card ~224px), but the reference lays them out three-to-a-row at
+   ~304px each. Switch these grids to a flex row so the three product cards
+   fill the 75% column the same way the reference does. */
+.fusion-builder-row-5 .fusion-builder-column-11 .fusion-post-cards .fusion-grid,
+.fusion-builder-row-5 .fusion-builder-column-16 .fusion-post-cards .fusion-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  column-gap: normal !important;
+  row-gap: 32px !important;
+}
+.fusion-builder-row-5 .fusion-builder-column-11 .fusion-post-cards .fusion-grid > li,
+.fusion-builder-row-5 .fusion-builder-column-16 .fusion-post-cards .fusion-grid > li {
+  flex: 0 0 304px !important;
+  max-width: 304px !important;
+}

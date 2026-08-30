@@ -1,0 +1,34 @@
+.wbte_sc_bogo_products li.wbte_get_away_product{ width:20%; text-align: start; position: relative; display: flex; flex-direction: column; border: 1px solid #EAEBED; border-radius: 10px; min-width: 235px; padding: 15px; margin: 0; }
+
+.wbte_get_away_product table.wt_variations{ margin: 0; }
+ul.woocommcerce.wbte_sc_bogo_products{ width:100%; margin:0; padding:0px; list-style-type:none; margin-bottom:25px; display:flex; flex-wrap:wrap; gap: 20px 3%; }
+
+.wbte_product_name{  color: #555E6B;  font-size: 17px;  font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.wbte_product_image{ margin-bottom: 10px; }
+.wbte_product_image img{ border-radius: 7px; }
+
+.wbte_give_away_product_attr{ width: 100%; }
+
+.wbte_sc_bogo_msg_under_free_gift{ color: green; margin: 0 !important; }
+.wbte_sc_bogo_cheap_exp_qty_txt{ margin: 0 !important; font-size: small; }
+
+.wbte_sc_prod_name_qty_price{ display: flex; align-items: center; gap: 10px; justify-content: space-between; min-height: 80px; }
+.wt_sc_giveaway_products_cart_page .giveaway-title{ font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; }
+
+/* Product Selection Styles */
+.wbte_get_away_product { cursor: pointer; position: relative; transition: all 0.3s ease; }
+.wbte_product_checkbox { position: absolute; top: 19px; right: 21.5px; width: 20px; height: 20px; border: 2px solid #EAEBED; border-radius: 4px; background: #fff; cursor: pointer; transition: all 0.2s ease; padding: 0; }
+.wbte_product_checkbox:after { content: ''; position: absolute; display: none; left: 50%; top: 50%; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: translate(-50%, -50%) rotate(45deg); }
+.wbte_get_away_product.selected .wbte_product_checkbox:after { display: block; }
+.wbte_variation_error { color: #dc3545; margin-top: 10px; font-size: 14px; display: flex; align-items: center; gap: 5px; }
+.wbte_variation_error span { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: #dc3545; color: white; border-radius: 50%; font-size: 12px; font-weight: bold; }
+.wbte_get_away_product.disabled { opacity: 0.5; pointer-events: none; }
+
+/* Mobile Responsive Styles */
+@media screen and (max-width: 768px) {
+    .wbte_sc_bogo_products li.wbte_get_away_product { width: 100%; min-width: unset; margin: 0; padding: 9px 12px; display: flex; flex-direction: row; }
+    .wbte_sc_free_prod_details { padding-right: 25px; flex: 1; }
+    .wbte_product_name { font-size: 15px; -webkit-line-clamp: 1; line-clamp: 1; }
+    li.wbte_get_away_product input[name="wbte_sc_bogo_quantity"]{ padding: unset; width: 59px; text-align: center; }
+    .wbte_product_checkbox { top: 12px; right: 12px; }
+}

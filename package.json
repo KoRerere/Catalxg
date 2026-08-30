@@ -1,0 +1,9 @@
+{
+  "name": "catalxg-local-mirror",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "mirror": "node tools/mirror.mjs",
+    "start": "node tools/server.mjs"
+  }
+}

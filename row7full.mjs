@@ -1,0 +1,14 @@
+import puppeteer from 'puppeteer';
+const browser = await puppeteer.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless:'new', args:['--no-sandbox']});
+const page = await browser.newPage();
+await page.setViewport({width:692,height:900,deviceScaleFactor:2,isMobile:true,hasTouch:true});
+await page.goto('http://localhost:4173/', {waitUntil:'networkidle2', timeout:60000});
+await page.evaluate(()=>new Promise(r=>setTimeout(r,2500)));
+const el=await page.$('.fusion-builder-row-7');
+await el.scrollIntoView();
+await page.evaluate(()=>new Promise(r=>setTimeout(r,600)));
+const box=await el.boundingBox();
+console.log('row-7 box', JSON.stringify(box));
+await page.screenshot({path:'_row7full.png', clip:{x:0,y:0,width:692,height:Math.min(900,box.height)}});
+await browser.close();
+console.log('saved _row7full.png');

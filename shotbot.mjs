@@ -1,0 +1,11 @@
+import puppeteer from 'puppeteer';
+const browser = await puppeteer.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless:'new', args:['--no-sandbox']});
+const page = await browser.newPage();
+await page.setViewport({width:1988,height:412,deviceScaleFactor:2});
+await page.goto('http://localhost:4173/', {waitUntil:'networkidle2', timeout:60000});
+await page.evaluate(()=>new Promise(r=>setTimeout(r,2500)));
+await page.evaluate(()=>window.scrollTo(0,6554));
+await page.evaluate(()=>new Promise(r=>setTimeout(r,500)));
+await page.screenshot({path:'_botband.png'});
+await browser.close();
+console.log('saved _botband.png');
