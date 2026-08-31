@@ -21,4 +21,4 @@ const server = http.createServer(async (request, response) => {
   response.writeHead(200, { 'content-type': `${types[path.extname(file)] || 'application/octet-stream'}; charset=utf-8` });
   createReadStream(file).pipe(response);
 });
-server.listen(process.env.PORT || 4173, () => console.log(`http://localhost:${process.env.PORT || 4173}`));
+server.listen(process.env.PORT || 4175, () => console.log(`http://localhost:${process.env.PORT || 4175}`));

@@ -1,7 +1,7 @@
 :root { --local-accent: #0c9031; --local-ink: #2d3a35; }
 html { scroll-behavior: smooth; }
 body { animation: local-fade-in .35s ease both; }
-@keyframes local-fade-in { from { opacity: .6; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes local-fade-in { from { opacity: .6; } to { opacity: 1; } }
 /* The original search submit relies on a font glyph that is absent offline. */
 .fusion-search-button .fusion-search-submit {
   color: transparent !important;
@@ -20,23 +20,41 @@ body { animation: local-fade-in .35s ease both; }
   color: transparent !important;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23222222' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v16M6 14l6 6 6-6'/%3E%3C/svg%3E") center / 19px 19px no-repeat !important;
 }
-.fusion-grid-view .awb-icon-grid,
-.fusion-list-view .awb-icon-list {
-  width: 24px !important;
-  height: 24px !important;
-  margin: 0 !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%);
-  font-size: 0 !important;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 22px 22px;
+/* WooCommerce grid/list toggle. The theme renders these as icon-font glyphs
+   (awb-icon-grid / awb-icon-list) that are absent offline, so swap them for
+   inline SVG backgrounds. The theme's absolute-positioning rules collapse once
+   the glyph is gone (the grid anchor loses its height and the inline list icon
+   paints nothing), so make the anchor a 39px flex box and the icon a centred
+   flex item. */
+.fusion-grid-list-view .fusion-grid-view,
+.fusion-grid-list-view .fusion-list-view {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 39px !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
 }
-.fusion-grid-view .awb-icon-grid {
+.fusion-grid-list-view .awb-icon-grid,
+.fusion-grid-list-view .awb-icon-list {
+  display: block !important;
+  position: static !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 18px 18px !important;
+}
+.fusion-grid-list-view .fusion-grid-view .awb-icon-grid {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23222222'%3E%3Crect x='3' y='3' width='5' height='5' rx='0.5'/%3E%3Crect x='10' y='3' width='5' height='5' rx='0.5'/%3E%3Crect x='17' y='3' width='5' height='5' rx='0.5'/%3E%3Crect x='3' y='10' width='5' height='5' rx='0.5'/%3E%3Crect x='10' y='10' width='5' height='5' rx='0.5'/%3E%3Crect x='17' y='10' width='5' height='5' rx='0.5'/%3E%3Crect x='3' y='17' width='5' height='5' rx='0.5'/%3E%3Crect x='10' y='17' width='5' height='5' rx='0.5'/%3E%3Crect x='17' y='17' width='5' height='5' rx='0.5'/%3E%3C/svg%3E");
 }
-.fusion-list-view .awb-icon-list {
+.fusion-grid-list-view .fusion-list-view .awb-icon-list {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23222222' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M9 6h12M9 12h12M9 18h12'/%3E%3Ccircle cx='4' cy='6' r='1' fill='%23222222'/%3E%3Ccircle cx='4' cy='12' r='1' fill='%23222222'/%3E%3Ccircle cx='4' cy='18' r='1' fill='%23222222'/%3E%3C/svg%3E");
 }
 .local-cart-toggle { position: fixed; right: 22px; bottom: 20px; z-index: 100000; width: 54px; height: 54px; border: 0; border-radius: 50%; background: var(--local-accent); color: #fff; box-shadow: 0 9px 25px rgba(0,0,0,.22); font-size: 20px; cursor: pointer; transition: transform .2s ease, background .2s ease; }
@@ -70,7 +88,7 @@ body { animation: local-fade-in .35s ease both; }
    contrast stripes and a big background word, product nested inside
    with its lower part cut by the pentagon's bottom edge.
    ------------------------------------------------------------------ */
-.hero-pent { position: relative; width: 100%; max-width: 520px; margin: 0 auto; aspect-ratio: 460 / 660; overflow: hidden; }
+.hero-pent { position: relative; width: 100%; max-width: 520px; margin: 0 auto; aspect-ratio: 460 / 660; overflow: hidden; transform: translateY(-76px); }
 .hero-pent-shape { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .hero-pent--green .hero-pent-shape polygon { fill: #0c9031; }
 .hero-pent--amber .hero-pent-shape polygon { fill: #ebac77; }
@@ -93,14 +111,14 @@ body { animation: local-fade-in .35s ease both; }
 .hero-pent--amber .hero-pent-stripes span { --stripe-angle: 46deg; }
 .hero-pent-word {
   position: absolute; inset: 0;
-  display: flex; align-items: flex-end; justify-content: center;
-  padding-bottom: 4.5%;
+  display: flex; align-items: center; justify-content: center;
+  padding-bottom: 0;
   /* clip the word to the pentagon silhouette so it never bleeds outside */
   clip-path: polygon(50% 31.8%, 99.8% 57.1%, 80.9% 97.9%, 19.1% 97.9%, 0.2% 57.1%);
   pointer-events: none;
 }
 .hero-pent-word b {
-  font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: .01em;
+  font-size: 84px; font-weight: 800; line-height: 1; letter-spacing: .01em;
   white-space: nowrap;
 }
 .hero-pent--green .hero-pent-word b { color: #a8dcc8; opacity: .55; }
@@ -139,6 +157,41 @@ h1, h2, h3, h4, h5, h6 { font-weight: 600; letter-spacing: 0; }
 .woocommerce #respond input#submit, .woocommerce #place_order, .wpcf7-submit {
   text-transform: none; font-weight: 600; letter-spacing: 0; border-radius: 6px;
 }
+/* "Engineered for research precision." CTA (shop Terui items → /SHOP/): the
+   theme's hover slide uses the dark --awb-color4 for the incoming gradient.
+   Lift it to the brighter brand green. !important is required because the
+   hover gradient colors are set as inline --button_*_hover vars. */
+.fusion-button.button-5[href="/SHOP/"] {
+  --button_gradient_top_color_hover: #16ab41 !important;
+  --button_gradient_bottom_color_hover: #16ab41 !important;
+}
+/* "read more articles" CTA (news band): the dark band remaps --awb-color5 to a
+   pale mint (#a9f0c4) that washes out under the white label. Pin the fill to
+   the solid theme green and step one shade darker on hover. */
+.fusion-button.button-4[href="/news-recipes/"] {
+  --button_gradient_top_color: #0c9031 !important;
+  --button_gradient_bottom_color: #0c9031 !important;
+  --button_gradient_top_color_hover: #0a6b26 !important;
+  --button_gradient_bottom_color_hover: #0a6b26 !important;
+  --button_border_hover_color: #0a6b26 !important;
+}
+/* Footer newsletter "subscribe now" button: its background uses --awb-color5,
+   which the dark-band override remaps to the pale mint #a9f0c4, washing out the
+   white label. Pin the fill to the bright brand green so the text stays legible.
+   On hover the theme was sliding to --awb-color7 (near-black #2d3a35) which is
+   invisible on the dark band; use the theme green a shade darker instead so the
+   hover stays legible. Scope this to the footer newsletter form (not to a
+   per-page Fusion button index): Fusion numbers the buttons in each page body
+   independently, so the subscribe button is button-6 on the homepage but
+   button-2 on the shop page. Targeting the form keeps every page's footer
+   subscribe button bright green, and avoids touching other buttons (e.g. a cart
+   "0 Items" pill) that happen to share an index. */
+.fusion-tb-footer .fusion-form-933 a.fusion-button {
+  --button_gradient_top_color: #16ab41 !important;
+  --button_gradient_bottom_color: #16ab41 !important;
+  --button_gradient_top_color_hover: #0c9031 !important;
+  --button_gradient_bottom_color_hover: #0c9031 !important;
+}
 input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="password"], textarea, select { border-radius: 4px; }
 /* Dark bands (deep green-black sections): remap accents to light green so
    highlight text and links keep contrast. Custom properties inherit, so
@@ -161,10 +214,10 @@ input[type="text"], input[type="email"], input[type="tel"], input[type="number"]
   --link_color: #0c9031;
 }
 /* Prices are computed from shifted HSL components that land on muddy hues
-   with the green palette — pin them to the brand green instead. The theme
+   with the green palette — pin them to a clear orange instead. The theme
    colors the inner .amount spans directly, so override at that level. */
 body .price, body .price .amount, body .price ins .amount,
-body .fusion-body .fusion-woo-price-tb .price .amount { color: var(--local-accent) !important; }
+body .fusion-body .fusion-woo-price-tb .price .amount { color: #f97316 !important; }
 body .price del, body .price del .amount { color: #8a9490 !important; }
 
 /* ------------------------------------------------------------------
@@ -181,19 +234,19 @@ body .price del, body .price del .amount { color: #8a9490 !important; }
 }
 /* Highlighted title link on the dark "why" band: brighter green by
    default, a step darker on hover. */
-.fusion-body h2.catalxg-why-title a,
-body h2.catalxg-why-title a { color: #3fae5e; }
-.fusion-body h2.catalxg-why-title a:hover,
-body h2.catalxg-why-title a:hover { color: #33924e; }
+.fusion-body h2.terui-why-title a,
+body h2.terui-why-title a { color: #3fae5e; }
+.fusion-body h2.terui-why-title a:hover,
+body h2.terui-why-title a:hover { color: #33924e; }
 /* Product image hover overlay: the theme ships an olive #aad75d→#d1e990
    gradient. Replace with the brand green, deeper at the bottom. */
 .fusion-image-wrapper .fusion-rollover,
 .fusion-rollover {
   background-image: linear-gradient(
     to bottom,
-    rgba(12, 144, 49, 0.90) 0%,
-    rgba(12, 144, 49, 0.85) 55%,
-    rgba(12, 144, 49, 0.80) 100%
+    rgba(12, 144, 49, 0.50) 0%,
+    rgba(12, 144, 49, 0.45) 55%,
+    rgba(12, 144, 49, 0.40) 100%
   ) !important;
 }
 
@@ -229,9 +282,14 @@ body h2.catalxg-why-title a:hover { color: #33924e; }
    wraps them onto their own row. Pin those two grids back to 75% so the
    tree card (25%) and product grid (75%) sit side-by-side in one row,
    matching the reference grid. Content, colours and spacing untouched.
+   Scoped to the homepage band's #terui-best-sellers-row id rather than the
+   generic .fusion-builder-row-5, because the contact-2 footer reuses row-5
+   containers and a fusion-builder-column-11 for its "subscribe now" button
+   — an unscoped rule would pin that button to 75% and make it narrower
+   than the homepage.
    ------------------------------------------------------------------ */
-.fusion-builder-row-5 .fusion-builder-column-11,
-.fusion-builder-row-5 .fusion-builder-column-16 {
+#terui-best-sellers-row .fusion-builder-column-11,
+#terui-best-sellers-row .fusion-builder-column-16 {
   width: 75% !important;
   max-width: 75% !important;
   flex: 0 0 75% !important;
@@ -270,4 +328,312 @@ body h2.catalxg-why-title a:hover { color: #33924e; }
 .fusion-builder-row-5 .fusion-builder-column-16 .fusion-post-cards .fusion-grid > li {
   flex: 0 0 304px !important;
   max-width: 304px !important;
+}
+/* The tree promo cards (the two green columns) are flex siblings of the
+   product grids and use align-self:stretch, but the product grid's <ul> ships
+   a -16px top margin (a Fusion gutter offset) that lets the white cards
+   overflow 16px above the row's natural top. Because that overflow is not
+   counted toward the row height, the green columns stretch only to 503px —
+   16px shorter than the 519px product cards. Zero out that gutter margin so
+   the grids size to their cards and the green cards stretch to the same
+   height as the white ones. */
+.fusion-builder-row-5 .fusion-builder-column-11 .fusion-post-cards .fusion-grid,
+.fusion-builder-row-5 .fusion-builder-column-16 .fusion-post-cards .fusion-grid {
+  margin-top: 0 !important;
+}
+
+/* ------------------------------------------------------------------
+   Homepage "Best selling products" band — whole-card hover.
+   The theme reveals the green rollover overlay only on
+   .fusion-image-wrapper:hover, so hovering the title, price or button
+   does nothing. Hovering anywhere on a product card fades the
+   brand-green image overlay in, but the white card itself casts no
+   outer shadow (it stays flush against the dark band). The overlay is
+   confined to the product photo (not the whole card) — the mask should
+   cover the picture, never the title/price/button. The product photo
+   and the hover overlay share the same rounded corners. Brand green =
+   --awb-color5 (#0c9031). Scoped to the dark #1f2b26 best-selling band
+   (row-5) so the shop grid, which sits on a transparent band, is left
+   untouched.
+   ------------------------------------------------------------------ */
+.fusion-builder-row-5[style*="--awb-background-color:#1f2b26"] .fusion-post-cards-grid-column.product {
+  transition: box-shadow .3s ease, filter .3s ease, background-color .3s ease, border-color .3s ease;
+}
+.fusion-builder-row-5[style*="--awb-background-color:#1f2b26"] .fusion-post-cards-grid-column.product:hover {
+  /* No outer shadow on hover — the white card stays flush against the dark
+     band, only the brand-green image overlay fades in. */
+  box-shadow: none;
+}
+/* Reveal the brand-green rollover overlay on whole-card hover (the theme only
+   does it on the image wrapper). Mirrors avada-image-rollover-direction-left:
+   the overlay slides in from the left on opacity + transform. */
+.fusion-builder-row-5[style*="--awb-background-color:#1f2b26"] .fusion-post-cards-grid-column.product:hover .fusion-rollover {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+/* Round the product photo corners. The theme wraps the <img> in
+   .fusion-image-wrapper, which clips with overflow:hidden but ships square
+   corners; give it a radius so the photo renders with rounded corners. */
+.fusion-builder-row-5[style*="--awb-background-color:#1f2b26"] .fusion-post-cards-grid-column.product .fusion-image-wrapper {
+  /* Make it position:relative so its overflow:hidden + radius actually clips the
+     absolute .fusion-rollover inside it. The theme leaves it position:static, so
+     the rollover's containing block is the outer .fusion-classic-product-image-wrapper
+     and it escapes the clip, bleeding green past the photo's rounded border into
+     the left gutter. */
+  position: relative;
+  border-radius: 12px;
+}
+.fusion-builder-row-5[style*="--awb-background-color:#1f2b26"] .fusion-post-cards-grid-column.product .fusion-image-wrapper img {
+  border-radius: 12px;
+}
+/* The rolling overlay is absolutely positioned against the image wrapper (its
+   parent is static, so the wrapper's overflow/clip does not round it) — round
+   the overlay itself to the same radius, which is what gives the hover
+   animation rounded corners. */
+.fusion-builder-row-5[style*="--awb-background-color:#1f2b26"] .fusion-post-cards-grid-column.product .fusion-rollover {
+  border-radius: 12px;
+}
+
+/* ------------------------------------------------------------------
+   Remove text underlines site-wide.
+   The theme leaves <a> at the browser default (text-decoration: underline),
+   so any link — heading links, body copy, product titles, footer links —
+   shows a line underneath. Strip it for every link and state. Only
+   text-decoration is touched; colours, borders and hover effects are
+   left as-is. Local-commerce.css loads on every page after the theme
+   CSS, so this wins the cascade.
+   ------------------------------------------------------------------ */
+a,
+a:visited,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none !important;
+}
+
+/* ------------------------------------------------------------------
+   Homepage hero band: tighten vertical height (~120px shorter) while
+   keeping the centred content block vertically centred. The hero row's
+   height is driven by the 4vw vertical padding on each side of the band
+   plus the centre column's internal spacing, so both are trimmed. The
+   hero columns already use align-self:center, so shrinking the
+   surrounding space keeps the content vertically centred without
+   touching the layout or the side pentagon modules. The padding is
+   trimmed on desktop only; tablet/mobile keep the theme's original
+   64px medium/small padding so the stacked layout keeps its breathing
+   room.
+   ------------------------------------------------------------------ */
+@media (min-width: 1024px) {
+  .fusion-fullwidth.fusion-builder-row-2 {
+    --awb-padding-top: 16px !important;
+    --awb-padding-bottom: 16px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+}
+/* Centre column: tighten the vertical gaps between the logo, title,
+   subtitle and CTA so the block is shorter but still centred in the band. */
+.fusion-builder-column-5 .fusion-image-element {
+  --awb-margin-bottom: 16px !important;
+  margin-bottom: 16px !important;
+}
+.fusion-builder-column-5 .fusion-title-1 {
+  --awb-margin-bottom: 16px !important;
+  margin-bottom: 16px !important;
+}
+.fusion-builder-column-5 .fusion-text-1 {
+  --awb-margin-bottom: 26px !important;
+  margin-bottom: 26px !important;
+}
+.fusion-builder-column-5 .button-1 {
+  --button_margin-bottom: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+/* ---- Remove grey/white blank space at the bottom of the page ----
+   The body had an identity transform (from the local-fade-in animation),
+   which makes every position:fixed descendant body-contained instead of
+   viewport-fixed. The floating WhatsApp (ht-ctc) and local cart widgets
+   therefore got laid out at the document bottom, past the footer, creating
+   the large empty area below "Advancing discovery through Terui research".
+   JivoChat is NOT hidden (it positions itself to the viewport and is now
+   restored); we only hide the widgets that still widen the page. */
+[id*="ht-ctc"],
+[id*="ht_ctc"],
+.ht-ctc,
+[id*="local-cart"],
+[id*="local_cart"],
+.local-cart-toggle,
+.local-cart-panel,
+.local-toast {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------------
+   "Why Choose" band — heading block: stack the brand mark above the
+   heading, both flush left (matches the reference layout).
+   ------------------------------------------------------------------ */
+.fusion-builder-column-21 .fusion-builder-row-inner .fusion-builder-nested-column-5 > .fusion-column-wrapper {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+.fusion-builder-column-21 .fusion-builder-row-inner .fusion-builder-nested-column-5 > .fusion-column-wrapper .fusion-image-element {
+  margin-right: 0 !important;
+  margin-bottom: 18px !important;
+}
+.fusion-builder-column-21 .fusion-builder-row-inner .fusion-builder-nested-column-5 > .fusion-column-wrapper .fusion-title-13 {
+  margin-top: 0 !important;
+}
+/* "Terui Shop" link in the why-copy: lift to a brighter brand green. */
+.fusion-text-8 a,
+.fusion-text-8 a:visited { color: #35c75a !important; }
+.fusion-text-8 a:hover,
+.fusion-text-8 a:focus { color: #2db24f !important; }
+
+/* Move the floating "back to top" arrow up 6 px so it clears the chat widget. */
+#toTop.fusion-top-top-link { bottom: 36px !important; }
+
+/* Replace the vegan "leaf" icon with the Terui logo mark.
+   The categories dropdown (and any list bullet) renders a glyph from the
+   custom 'storeicon' font via .awb-vegan-storeicon-vegan:before. Swap that
+   glyph for the Terui single mark, drawn from the same path as the stylesheet. */
+.awb-vegan-storeicon-vegan {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  align-self: center !important;
+}
+.awb-vegan-storeicon-vegan:before {
+  content: "" !important;
+  display: block !important;
+  width: 1em !important;
+  height: 1em !important;
+  background-image: url("terui_logo-SIngle.svg") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  background-color: transparent !important;
+  color: transparent !important;
+}
+/* Centre the dropdown row text against the icon: its extra top margin
+   (8px vs 4px bottom) pushed the text below the flex-line centre. */
+.awb-vegan-storeicon-vegan + .fusion-text {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* ------------------------------------------------------------------
+   Shop grid/list view toggle (static mirror). The live site switches
+   layout server-side via ?product_view=, but this static mirror can't
+   re-render, so we toggle a class on the post-cards container and
+   reshape each product card into a horizontal row (image left, text
+   right) to match the reference list view (image ~40% / content ~60%).
+   ------------------------------------------------------------------ */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop .fusion-grid {
+  grid-template-columns: 1fr !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop .fusion-grid > li {
+  width: 100% !important;
+  max-width: 100% !important;
+  grid-column: 1 / -1 !important;
+  /* no box: transparent card, only vertical padding separates rows */
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 16px 0 !important;
+  box-shadow: none !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li > .fusion-column-wrapper {
+  display: grid !important;
+  grid-template-columns: 40% 1fr !important;
+  column-gap: 30px !important;
+  align-items: start !important;
+  align-content: start !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  /* single 1px divider below each row, like the reference */
+  border-top: 0 !important;
+  border-right: 0 !important;
+  border-left: 0 !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+  padding: 8px 8px 40px !important;
+}
+/* image: left column, rounded corners, vertically centred, natural size */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li > .fusion-column-wrapper > .fusion-classic-product-image-wrapper {
+  grid-column: 1 !important;
+  grid-row: 1 / span 30 !important;
+  align-self: center !important;
+  align-items: center !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li > .fusion-column-wrapper > .fusion-classic-product-image-wrapper img {
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 8px !important;
+}
+/* content: right column, top-aligned with reference spacing */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li > .fusion-column-wrapper > :not(.fusion-classic-product-image-wrapper) {
+  grid-column: 2 !important;
+  align-self: start !important;
+  justify-self: start !important;
+  text-align: left !important;
+}
+/* hide the category tag + separator in list view (reference omits them) */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-meta-tb,
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-separator {
+  display: none !important;
+}
+/* title: reference 24px, ~28px from top, 8px below-title gap.
+   The shop cards each carry a differently numbered title class
+   (fusion-title-2, -3, -4, ...), so match every .fusion-title in the
+   list-view cards, not a single number. Their inline margin-left:16px
+   would otherwise push the title 16px right of the description/price. */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-title {
+  margin: 28px 0 8px 0 !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-title .fusion-title-heading {
+  font-size: 24px !important;
+  line-height: 1.4 !important;
+  color: #494949 !important;
+  margin: 0 !important;
+}
+/* short description: reference 15px / 27px line-height, 16px below */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-text-no-margin {
+  display: block !important;
+  margin: 0 0 16px 0 !important;
+  padding: 0 !important;
+  font-size: 15px !important;
+  line-height: 27px !important;
+  color: #494949 !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards:not(.local-list-shop) li .fusion-text-no-margin {
+  display: none !important;
+}
+/* price: reference 17px, site orange accent, 16px above + below */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-woo-price-tb {
+  margin: 16px 0 !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-woo-price-tb .amount,
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-woo-price-tb .woocommerce-Price-amount {
+  color: #f97316 !important;
+}
+/* add-to-cart: reference button, 8px gap above, content-sized + left-aligned */
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-woo-cart {
+  margin-top: 8px !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-builder-row-inner .fusion-column-wrapper:has(.fusion-woo-cart) {
+  padding-left: 0 !important;
+}
+.fusion-post-cards-archives-tb .fusion-post-cards.local-list-shop li .fusion-woo-cart .fusion-post-card-cart-add-to-cart {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }

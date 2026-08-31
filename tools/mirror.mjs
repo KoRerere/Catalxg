@@ -1,8 +1,8 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const origin = 'https://catalxgcare.com';
-const assetHosts = new Set(['catalxgcare.com']);
+const origin = 'https://teruicare.com';
+const assetHosts = new Set(['teruicare.com']);
 const root = path.resolve(import.meta.dirname, '..', 'site');
 const sitemaps = ['page-sitemap.xml', 'product-sitemap.xml', 'post-sitemap.xml'];
 const visited = new Set();
@@ -77,13 +77,14 @@ function references(html, base) {
 
 function localize(text) {
   return text
-    .replaceAll('https://catalxgcare.com/', '/')
-    .replaceAll('http://catalxgcare.com/', '/')
+    .replaceAll('https://teruicare.com/', '/')
+    .replaceAll('http://teruicare.com/', '/')
+    .replaceAll('//teruicare.com/', '/')
     // The source's older shop template points at a removed third-party logo.
-    // Use the current Catalxg asset, which is present in this local mirror.
-    .replaceAll('https://saddlebrown-chinchilla-978528.hostingersite.com/wp-content/uploads/2023/12/logo-avada-vegan-store.png', '/wp-content/uploads/2025/11/68922e37fb646dfb29e9689f_Catalxg_20logo_20black-p-500.webp')
-    .replaceAll('/wp-content/uploads/2023/12/logo-avada-vegan-store.png', '/wp-content/uploads/2025/11/68922e37fb646dfb29e9689f_Catalxg_20logo_20black-p-500.webp')
-    .replaceAll('https:\\/\\/catalxgcare.com\\/', '\\/');
+    // Use the current Terui asset, which is present in this local mirror.
+    .replaceAll('https://saddlebrown-chinchilla-978528.hostingersite.com/wp-content/uploads/2023/12/logo-avada-vegan-store.png', '/wp-content/uploads/2025/11/68922e37fb646dfb29e9689f_Terui_20logo_20black-p-500.webp')
+    .replaceAll('/wp-content/uploads/2023/12/logo-avada-vegan-store.png', '/wp-content/uploads/2025/11/68922e37fb646dfb29e9689f_Terui_20logo_20black-p-500.webp')
+    .replaceAll('https:\\/\\/teruicare.com\\/', '\\/');
 }
 
 async function fetchResource(url) {

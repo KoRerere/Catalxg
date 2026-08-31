@@ -1,12 +1,12 @@
 (() => {
-  const key = 'catalxg-local-cart-v1';
+  const key = 'terui-local-cart-v1';
   const money = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
   const read = () => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
   const write = value => { localStorage.setItem(key, JSON.stringify(value)); render(); };
   const total = cart => cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   let cart = read();
 
-  const nameFrom = button => button.getAttribute('aria-label')?.replace(/^Add to cart:\s*[“\"]?|[”\"]$/g, '') || button.closest('.product, form, .product-summary')?.querySelector('h1,h2,h3,h4,h5,.product_title')?.textContent.trim() || 'Catalxg product';
+  const nameFrom = button => button.getAttribute('aria-label')?.replace(/^Add to cart:\s*[“\"]?|[”\"]$/g, '') || button.closest('.product, form, .product-summary')?.querySelector('h1,h2,h3,h4,h5,.product_title')?.textContent.trim() || 'Terui product';
   const priceFrom = button => {
     const text = button.closest('.product, form, .product-summary, .fusion-layout-column')?.querySelector('.price,.woocommerce-Price-amount')?.textContent || '';
     return Number(text.replace(/[^0-9.]/g, '')) || 0;
@@ -43,6 +43,64 @@
     panel.innerHTML = `<h3>Your cart</h3>${cart.length ? cart.map(item => `<div class="local-cart-item"><span>${item.name}<br><small>${item.quantity} × ${money.format(item.price)}</small></span><button class="local-remove" data-id="${item.id}" aria-label="Remove ${item.name}">Remove</button></div>`).join('') + `<strong>Total: ${money.format(total(cart))}</strong><a class="local-checkout" href="/checkout-2/">Checkout</a>` : '<p>Your cart is empty.</p>'}`;
     renderCartPage(); renderCheckout();
   }
+
+  // Shop grid/list view toggle. The static mirror can't change the layout
+  // server-side (?product_view=), so switch it in the browser and remember it.
+  // The product short descriptions live on the product pages (the shop cards
+  // leave the excerpt slot empty), so we inject them here so list view shows
+  // the same copy as the reference site.
+  const SHOP_DESCRIPTIONS = {
+    'BPC-157 & TB-500 40mg (R&D Only)': 'Each BPC-157 & TB-500 40mg Pen Kit Includes:\nPre-filled Research pen (40mg total: 20mg BPC-157 + 20mg TB-500)\nResearch information sheet',
+    'Glow 70mg (R&D Only)': 'Each Glow 70mg Research kit includes:\n2 × Pre-filled Research pens (Each pen contains 5mg BPC-157, 5mg TB-500, 25mg GHK-Cu)',
+    'NAD+ 1,000mg': 'Each NAD+ 1,000mg kit includes:\n2 × Pre-filled NAD+ pens (500mg each)\nResearch information sheet',
+    'Retatrutide 20mg (R&D Only)': 'Each Retatrutide 20mg Research kit includes:\nPre-filled Research pen (20mg Retatrutide)\nResearch information sheet',
+    'Retatrutide 40mg (R&D Only)': 'Each Retatrutide 40mg Research kit includes:\nPre-filled Research pen (40mg Retatrutide)\nResearch information sheet',
+    'Tirzepatide 40mg (R&D Only)': 'Each Tirzepatide 40mg Research kit includes:\nPre-filled Research pen (40mg Tirzepatide)\nResearch information sheet',
+  };
+  function injectShopDescriptions() {
+    document.querySelectorAll('.fusion-post-cards-archives-tb .fusion-grid > li').forEach(card => {
+      const heading = card.querySelector('.fusion-title-heading');
+      const slot = card.querySelector('.fusion-text-no-margin');
+      if (!heading || !slot || slot.dataset.localDesc) return;
+      const title = heading.textContent.replace(/\s+/g, ' ').trim();
+      const text = SHOP_DESCRIPTIONS[title];
+      if (!text) return;
+      slot.dataset.localDesc = '1';
+      const p = document.createElement('p');
+      text.split('\n').forEach((line, i) => {
+        if (i) p.appendChild(document.createElement('br'));
+        p.appendChild(document.createTextNode(line));
+      });
+      slot.appendChild(p);
+    });
+  }
+
+  function initViewToggle() {
+    const container = document.querySelector('.fusion-post-cards-archives-tb .fusion-post-cards');
+    const gridLink = document.querySelector('.fusion-grid-view');
+    const listLink = document.querySelector('.fusion-list-view');
+    const gridLi = document.querySelector('.fusion-grid-view-li');
+    const listLi = document.querySelector('.fusion-list-view-li');
+    if (!container) return;
+    injectShopDescriptions();
+    const KEY = 'terui-shop-view-v1';
+    const apply = view => {
+      const list = view === 'list';
+      container.classList.toggle('local-list-shop', list);
+      if (listLi) listLi.classList.toggle('active-view', list);
+      if (gridLi) gridLi.classList.toggle('active-view', !list);
+    };
+    const saved = localStorage.getItem(KEY);
+    if (saved) apply(saved);
+    const handler = event => {
+      event.preventDefault();
+      const view = event.currentTarget.classList.contains('fusion-grid-view') ? 'grid' : 'list';
+      localStorage.setItem(KEY, view);
+      apply(view);
+    };
+    if (gridLink) gridLink.addEventListener('click', handler);
+    if (listLink) listLink.addEventListener('click', handler);
+  }
   function install() {
     document.body.insertAdjacentHTML('beforeend', '<button class="local-cart-toggle" aria-label="Open cart">&#128722;<span class="local-cart-count">0</span></button><aside class="local-cart-panel" aria-live="polite"></aside><div class="local-toast" role="status"></div>');
     document.addEventListener('click', event => {
@@ -56,6 +114,7 @@
       if (event.target.matches('.checkout-button, #place_order, [name="woocommerce_checkout_place_order"]')) { event.preventDefault(); cart = []; write(cart); toast('Order received. Thank you.'); setTimeout(() => location.assign('/'), 900); }
     });
     document.querySelectorAll('form.checkout').forEach(form => form.addEventListener('submit', event => { event.preventDefault(); cart = []; write(cart); toast('Order received. Thank you.'); }));
+    initViewToggle();
     render();
   }
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', install) : install();
