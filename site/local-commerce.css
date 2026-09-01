@@ -379,8 +379,10 @@ body h2.terui-why-title a:hover { color: #33924e; }
      absolute .fusion-rollover inside it. The theme leaves it position:static, so
      the rollover's containing block is the outer .fusion-classic-product-image-wrapper
      and it escapes the clip, bleeding green past the photo's rounded border into
-     the left gutter. */
-  position: relative;
+     the left gutter during the slide-in/out. !important because the theme's
+     .fusion-image-wrapper cascade also sets position:relative but the computed
+     value lands on static, so the clip never engages. */
+  position: relative !important;
   border-radius: 12px;
 }
 .fusion-builder-row-5[style*="--awb-background-color:#1f2b26"] .fusion-post-cards-grid-column.product .fusion-image-wrapper img {
