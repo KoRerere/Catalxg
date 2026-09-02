@@ -1,9 +1,25 @@
 {
-  "name": "terui-local-mirror",
+  "name": "terui-nuxt",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.0.0-alpha.4",
   "scripts": {
-    "mirror": "node tools/mirror.mjs",
-    "start": "node tools/server.mjs"
+    "dev": "nuxt dev",
+    "start": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "verify": "node verification/compare.mjs",
+    "verify:record": "node verification/record-interactions.mjs"
+  },
+  "dependencies": {
+    "nuxt": "4.5.2"
+  },
+  "devDependencies": {
+    "pixelmatch": "7.2.0",
+    "playwright": "1.62.1",
+    "pngjs": "7.0.0",
+    "typescript": "6.0.3",
+    "vue-tsc": "3.3.11"
   }
 }
