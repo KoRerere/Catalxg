@@ -130,7 +130,7 @@ function grabBalanced(html, startIdx) {
   }
   return null
 }
-function componentize(s) {
+function componentize(s, products = []) {
   // 1) to-top container
   s = s.replace(/<section class="to-top-container[^>]*>[\s\S]*?<\/section>/i, '  <SiteToTop/>')
   // 2) header: <div class="fusion-tb-header">...</div> -> <SiteHeader/>
@@ -172,7 +172,106 @@ function componentize(s) {
   }
   // 5) off-canvas panels: <div id="awb-oc-N" class="awb-off-canvas-wrap..."> -> <SiteOffCanvas/>
   s = replaceOffCanvas(s)
+  // 6) product card <li> in product grids -> <ProductCard v-for>
+  s = replaceProductCards(s, products)
   return s
+}
+
+// Replace the product-card <li>s inside the FIRST product grid <ul> with a single
+// <ProductCard v-for>. Other product grids (e.g. related products) are left as-is to
+// avoid duplicating cards across the row layouts.
+function replaceProductCards(s, products) {
+  if (!products.length) return s
+  // locate the first product grid ul that contains real product cards
+  let gridStart = -1
+  let gridEnd = -1
+  const ulRe = /<ul\b[^>]*>/g
+  let um
+  while ((um = ulRe.exec(s))) {
+    // find the balanced end of this ul
+    let depth = 0
+    const re = /<\/?ul\b[^>]*>/g
+    let mm
+    let end = -1
+    re.lastIndex = um.index
+    while ((mm = re.exec(s))) {
+      if (mm.index < um.index) continue
+      if (mm[0].startsWith('</ul')) depth--
+      else depth++
+      if (depth === 0) { end = mm.index + mm[0].length; break }
+    }
+    const block = s.slice(um.index, end)
+    const hasProduct = /<li\b[^>]*class="[^"]*product[^"]*"/.test(block) && block.includes('title-heading')
+    if (hasProduct) { gridStart = um.index; gridEnd = end; break }
+  }
+  if (gridStart < 0) return s
+  const vfor = `  <ProductCard
+    v-for="p in products"
+    :key="p.pid"
+    :title="p.title"
+    :price="p.price"
+    :image="p.image"
+    :href="p.href"
+    :product-id="p.pid"
+  />`
+  // replace the grid's inner content: keep the <ul> wrapper, drop its original
+  // product <li>s, render the v-for ProductCards, then re-balance.
+  const openTag = s.slice(gridStart, s.indexOf('>', gridStart) + 1)
+  const inner = s.slice(gridStart + openTag.length, gridEnd - '</ul>'.length)
+  // remove product <li>s from inner (they are replaced by v-for), keep any
+  // non-product <li> (e.g. a green feature card that lives inside the grid).
+  const cleanedInner = inner.replace(/<li\b[^>]*class="[^"]*product[^"]*"[^>]*>[\s\S]*?<\/li>/g, '')
+  s = s.slice(0, gridStart) + openTag + cleanedInner + '\n' + vfor + '\n' + '</ul>' + s.slice(gridEnd)
+  return s
+}
+
+// Decode the handful of HTML entities Avada emits in product titles/categories.
+function decodeEntities(s) {
+  return s
+    .replace(/&#0?38;/g, '&')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8211;/g, '-')
+    .replace(/&#8212;/g, '-')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&rsquo;/g, "'")
+    .replace(/&ldquo;/g, '\u201c')
+    .replace(/&rdquo;/g, '\u201d')
+    .replace(/&nbsp;/g, ' ')
+}
+
+// Extract product-card data (title/price/image/href/productId) from the raw source.
+function extractProducts(file) {
+  const h = fs.readFileSync(file, 'utf8')
+  const b = h.slice(h.indexOf('<body'))
+  function grabLi(html, start) {
+    let depth = 0
+    const re = /<\/?li\b[^>]*>/g
+    let m
+    while ((m = re.exec(html))) {
+      if (m.index < start) continue
+      if (m[0].startsWith('</li')) depth--
+      else depth++
+      if (depth === 0) return html.slice(start, m.index + m[0].length)
+    }
+    return null
+  }
+  const re = /<li\b[^>]*class="[^"]*product[^"]*"/g
+  let m
+  const products = []
+  while ((m = re.exec(b))) {
+    const c = grabLi(b, m.index)
+    if (!c || c.length < 3000 || !c.includes('title-heading')) continue
+    const title = decodeEntities((c.match(/title-heading[^>]*>\s*<a[^>]*>([^<]*)<\/a>/) || [])[1]?.trim() || '')
+    const price = (c.match(/woocommerce-Price-amount[^>]*>\s*<bdi>[\s\S]*?>([0-9][0-9.,]*)/) || [])[1] || ''
+    const href = (c.match(/href="([^"]*\/product\/[^"]*)"/) || [])[1] || ''
+    const pid = (c.match(/data-product_id="(\d+)"/) || [])[1] || ''
+    const img = (c.match(/data-orig-src="([^"]*)"|src="([^"]*wp-content[^"]*\.(?:png|jpg|jpeg|webp))"/) || [])[1]
+      || (c.match(/src="([^"]*wp-content[^"]*\.(?:png|jpg|jpeg|webp))"/) || [])[1] || ''
+    products.push({ title, price, href, pid, image: img.split('/').pop() })
+  }
+  return products
 }
 
 // Replace each Awada off-canvas wrap with a reusable <SiteOffCanvas> and put the
@@ -231,8 +330,9 @@ function buildPageSfc(file, route) {
   const bodyInner = extractBodyInner(html)
   const { title, metas, links, styles, headScripts } = parseHead(html)
   const { scripts: bodyScripts, styles: bodyStyles } = parseBodyScripts(bodyInner)
+  const products = extractProducts(file)
   let template = stripForTemplate(bodyInner).trim()
-  template = componentize(template)
+  template = componentize(template, products)
   const allStyles = [...styles, ...bodyStyles]
   let bodyAttrsObj = null
   if (bodyAttrs) { bodyAttrsObj = parseAttrs(bodyAttrs); delete bodyAttrsObj['']; delete bodyAttrsObj['/'] }
@@ -252,8 +352,11 @@ function buildPageSfc(file, route) {
   if (template.includes('<SiteHeader')) imports.push(`import SiteHeader from '~/components/layout/SiteHeader.vue'`)
   if (template.includes('<SiteFooter')) imports.push(`import SiteFooter from '~/components/layout/SiteFooter.vue'`)
   if (template.includes('<SiteOffCanvas')) imports.push(`import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'`)
+  if (template.includes('<ProductCard')) imports.push(`import ProductCard from '~/components/product/ProductCard.vue'`)
+  const productsStr = products.length ? `const products = ${JSON.stringify(products)}` : ''
   return `<script setup lang="ts">
 ${imports.join('\n')}
+${productsStr}
 const payload = ${payloadStr}
 ${extraBodyAttrs}
 useHead(payload)

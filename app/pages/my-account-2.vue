@@ -4,6 +4,7 @@ import SiteWhatsApp from '~/components/layout/SiteWhatsApp.vue'
 import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
+
 const payload = {
   "title": "My account - Terui Health care",
   "meta": [

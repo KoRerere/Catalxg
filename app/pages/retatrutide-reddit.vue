@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SiteHeader from '~/components/layout/SiteHeader.vue'
+
 const payload = {
   "title": "Retatrutide Reddit - Terui Health care",
   "meta": [

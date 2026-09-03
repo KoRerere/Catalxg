@@ -4,6 +4,7 @@ import SiteWhatsApp from '~/components/layout/SiteWhatsApp.vue'
 import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
+
 const payload = {
   "title": "Vegan food in USA, The 10 must visit places - Terui Health care",
   "meta": [

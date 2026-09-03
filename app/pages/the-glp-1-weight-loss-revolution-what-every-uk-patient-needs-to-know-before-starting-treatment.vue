@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SiteHeader from '~/components/layout/SiteHeader.vue'
+
 const payload = {
   "title": "The GLP-1 Weight Loss Revolution - Terui Health care",
   "meta": [
