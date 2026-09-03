@@ -170,8 +170,44 @@ function componentize(s) {
       s = s.slice(0, fStart) + `  <SiteFooter${hash ? ` :email-hash="'${hash}'"` : ''}/>` + s.slice(fStart + f.length)
     }
   }
+  // 5) off-canvas panels: <div id="awb-oc-N" class="awb-off-canvas-wrap..."> -> <SiteOffCanvas/>
+  s = replaceOffCanvas(s)
   return s
 }
+
+// Replace each Awada off-canvas wrap with a reusable <SiteOffCanvas> and put the
+// per-instance inner content in the default slot, so Avada off-canvas JS still works.
+function replaceOffCanvas(s) {
+  const ocRe = /<div\s+id="awb-oc-(\d+)"\s+class="awb-off-canvas-wrap\s+([^"]*)"(\s+style="([^"]*)")?/g
+  let m
+  while ((m = ocRe.exec(s))) {
+    const id = m[1]
+    const cls = m[2]
+    const style = m[4] || ''
+    const type = cls.includes('type-popup') ? 'popup' : 'sliding-bar'
+    const openIdx = s.indexOf('>', m.index) + 1
+    const end = (() => {
+      let depth = 0
+      const re = /<\/?div\b[^>]*>/g
+      let mm
+      while ((mm = re.exec(s))) {
+        if (mm.index < m.index) continue
+        const tag = mm[0]
+        if (tag.startsWith('</div')) depth--
+        else depth++
+        if (depth === 0) return mm.index + mm[0].length
+      }
+      return -1
+    })()
+    if (end < 0) { ocRe.lastIndex = m.index + 1; continue }
+    const inner = s.slice(openIdx, end - '</div>'.length)
+    const comp = `<SiteOffCanvas :id="${id}" type="${type}"${style ? ` style-vars="${style}"` : ''}>${inner}</SiteOffCanvas>`
+    s = s.slice(0, m.index) + comp + s.slice(end)
+    ocRe.lastIndex = m.index + comp.length
+  }
+  return s
+}
+
 function useHeadPayload({ title, metas, links, allStyles, headScripts, bodyScripts, bodyClass, htmlAttrs }) {
   const p = {}
   if (title) p.title = title
