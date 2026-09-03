@@ -133,21 +133,29 @@ function grabBalanced(html, startIdx) {
 function componentize(s) {
   // 1) to-top container
   s = s.replace(/<section class="to-top-container[^>]*>[\s\S]*?<\/section>/i, '  <SiteToTop/>')
-  // 2) whatsapp click-to-chat widget (balanced div) + its trailing data-source span.
+  // 2) header: <div class="fusion-tb-header">...</div> -> <SiteHeader/>
+  const hStart = s.indexOf('<div class="fusion-tb-header"')
+  if (hStart >= 0) {
+    const hd = grabBalanced(s, hStart)
+    if (hd) {
+      // home uses the short header (no CATEGORIES mega menu / phone column)
+      const isShort = !hd.includes('CATEGORIES') && !hd.includes('Order by phone')
+      s = s.slice(0, hStart) + `  <SiteHeader${isShort ? ' variant="short"' : ''}/>` + s.slice(hStart + hd.length)
+    }
+  }
+  // 3) whatsapp click-to-chat widget (balanced div) + its trailing data-source span.
   //    The data-settings <span> carries the page_id; replace both with <SiteWhatsApp/>.
   const waStart = s.indexOf('<div class="ht-ctc')
   if (waStart >= 0) {
     const wa = grabBalanced(s, waStart)
     if (wa) {
       const pid = (wa.match(/page_id(?:&quot;|\\):?\s*"?(\d+)/) || s.match(/page_id(?:&quot;|")\s*:\s*"?(\d+)/))?.[1]
-      // find the trailing data-settings span after the whatsapp root div
       let end = waStart + wa.length
       let after = s.slice(end)
       const spanStart = after.indexOf('<span class="ht_ctc_chat_data"')
       if (spanStart >= 0) {
-        // span ends right before the next element start (a <div or </body> outside it)
         const spanOpen = after.indexOf('<span class="ht_ctc_chat_data"')
-        const nextEl = after.slice(spanOpen).search(/<\/?div\b/gi) // the span content is attribute-only, no nested tags
+        const nextEl = after.slice(spanOpen).search(/<\/?div\b/gi)
         end = end + spanOpen + (nextEl >= 0 ? nextEl : after.length)
       }
       s = s.slice(0, waStart) + `  <SiteWhatsApp :page-id="${pid || 1012}"/>` + s.slice(end)
@@ -196,6 +204,8 @@ function buildPageSfc(file, route) {
   const imports = []
   if (template.includes('<SiteToTop')) imports.push(`import SiteToTop from '~/components/layout/SiteToTop.vue'`)
   if (template.includes('<SiteWhatsApp')) imports.push(`import SiteWhatsApp from '~/components/layout/SiteWhatsApp.vue'`)
+  if (template.includes('<SiteHeader')) imports.push(`import SiteHeader from '~/components/layout/SiteHeader.vue'`)
+  if (template.includes('<SiteOffCanvas')) imports.push(`import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'`)
   return `<script setup lang="ts">
 ${imports.join('\n')}
 const payload = ${payloadStr}
