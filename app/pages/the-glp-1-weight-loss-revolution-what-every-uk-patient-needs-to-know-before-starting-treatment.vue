@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const payload = {
   "title": "The GLP-1 Weight Loss Revolution - Terui Health care",
   "meta": [

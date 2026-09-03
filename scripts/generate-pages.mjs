@@ -112,6 +112,49 @@ function stripForTemplate(bodyInner) {
   })
   return autoClose(s)
 }
+
+// Replace the truly page-independent shared chrome with genuine Nuxt component
+// references. These blocks (-to-top, -whatsapp, -off-canvas) are structurally
+// identical across every page (no numbered Avada classes), so they are safe to
+// become real reusable components without touching the CSS.
+function grabBalanced(html, startIdx) {
+  let depth = 0
+  const re = /<\/?(div|section)\b[^>]*>/gi
+  let m
+  while ((m = re.exec(html))) {
+    if (m.index < startIdx) continue
+    const tag = m[0]
+    if (tag.startsWith('</')) depth--
+    else depth++
+    if (depth === 0) return html.slice(startIdx, m.index + m[0].length)
+  }
+  return null
+}
+function componentize(s) {
+  // 1) to-top container
+  s = s.replace(/<section class="to-top-container[^>]*>[\s\S]*?<\/section>/i, '  <SiteToTop/>')
+  // 2) whatsapp click-to-chat widget (balanced div) + its trailing data-source span.
+  //    The data-settings <span> carries the page_id; replace both with <SiteWhatsApp/>.
+  const waStart = s.indexOf('<div class="ht-ctc')
+  if (waStart >= 0) {
+    const wa = grabBalanced(s, waStart)
+    if (wa) {
+      const pid = (wa.match(/page_id(?:&quot;|\\):?\s*"?(\d+)/) || s.match(/page_id(?:&quot;|")\s*:\s*"?(\d+)/))?.[1]
+      // find the trailing data-settings span after the whatsapp root div
+      let end = waStart + wa.length
+      let after = s.slice(end)
+      const spanStart = after.indexOf('<span class="ht_ctc_chat_data"')
+      if (spanStart >= 0) {
+        // span ends right before the next element start (a <div or </body> outside it)
+        const spanOpen = after.indexOf('<span class="ht_ctc_chat_data"')
+        const nextEl = after.slice(spanOpen).search(/<\/?div\b/gi) // the span content is attribute-only, no nested tags
+        end = end + spanOpen + (nextEl >= 0 ? nextEl : after.length)
+      }
+      s = s.slice(0, waStart) + `  <SiteWhatsApp :page-id="${pid || 1012}"/>` + s.slice(end)
+    }
+  }
+  return s
+}
 function useHeadPayload({ title, metas, links, allStyles, headScripts, bodyScripts, bodyClass, htmlAttrs }) {
   const p = {}
   if (title) p.title = title
@@ -135,7 +178,8 @@ function buildPageSfc(file, route) {
   const bodyInner = extractBodyInner(html)
   const { title, metas, links, styles, headScripts } = parseHead(html)
   const { scripts: bodyScripts, styles: bodyStyles } = parseBodyScripts(bodyInner)
-  const template = stripForTemplate(bodyInner).trim()
+  let template = stripForTemplate(bodyInner).trim()
+  template = componentize(template)
   const allStyles = [...styles, ...bodyStyles]
   let bodyAttrsObj = null
   if (bodyAttrs) { bodyAttrsObj = parseAttrs(bodyAttrs); delete bodyAttrsObj['']; delete bodyAttrsObj['/'] }
@@ -148,7 +192,12 @@ function buildPageSfc(file, route) {
     const rest = Object.keys(bodyAttrsObj).reduce((acc, k) => { acc[k] = bodyAttrsObj[k]; return acc }, {})
     extraBodyAttrs = `const _ba = ${JSON.stringify(rest)}; payload.bodyAttrs = Object.assign({ class: ${JSON.stringify(bodyClass)} }, _ba);`
   }
+  // Explicit component imports (Nuxt auto-import prefixes sub-directory components).
+  const imports = []
+  if (template.includes('<SiteToTop')) imports.push(`import SiteToTop from '~/components/layout/SiteToTop.vue'`)
+  if (template.includes('<SiteWhatsApp')) imports.push(`import SiteWhatsApp from '~/components/layout/SiteWhatsApp.vue'`)
   return `<script setup lang="ts">
+${imports.join('\n')}
 const payload = ${payloadStr}
 ${extraBodyAttrs}
 useHead(payload)
