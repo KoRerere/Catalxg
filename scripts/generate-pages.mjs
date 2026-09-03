@@ -161,6 +161,15 @@ function componentize(s) {
       s = s.slice(0, waStart) + `  <SiteWhatsApp :page-id="${pid || 1012}"/>` + s.slice(end)
     }
   }
+  // 4) footer: <div class="fusion-tb-footer...">...</div> -> <SiteFooter :email-hash/>
+  const fStart = s.indexOf('<div class="fusion-tb-footer')
+  if (fStart >= 0) {
+    const f = grabBalanced(s, fStart)
+    if (f) {
+      const hash = f.match(/email-protection#([a-f0-9]+)/i)?.[1] || ''
+      s = s.slice(0, fStart) + `  <SiteFooter${hash ? ` :email-hash="'${hash}'"` : ''}/>` + s.slice(fStart + f.length)
+    }
+  }
   return s
 }
 function useHeadPayload({ title, metas, links, allStyles, headScripts, bodyScripts, bodyClass, htmlAttrs }) {
@@ -205,6 +214,7 @@ function buildPageSfc(file, route) {
   if (template.includes('<SiteToTop')) imports.push(`import SiteToTop from '~/components/layout/SiteToTop.vue'`)
   if (template.includes('<SiteWhatsApp')) imports.push(`import SiteWhatsApp from '~/components/layout/SiteWhatsApp.vue'`)
   if (template.includes('<SiteHeader')) imports.push(`import SiteHeader from '~/components/layout/SiteHeader.vue'`)
+  if (template.includes('<SiteFooter')) imports.push(`import SiteFooter from '~/components/layout/SiteFooter.vue'`)
   if (template.includes('<SiteOffCanvas')) imports.push(`import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'`)
   return `<script setup lang="ts">
 ${imports.join('\n')}
