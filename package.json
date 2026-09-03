@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "nuxt dev",
     "start": "nuxt dev",
-    "build": "nuxt build",
+    "build": "node scripts/sync-assets.mjs && nuxt build",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "node scripts/sync-assets.mjs && nuxt prepare",
+    "site:original": "node verification/serve-original.mjs",
     "verify": "node verification/compare.mjs",
     "verify:record": "node verification/record-interactions.mjs"
   },

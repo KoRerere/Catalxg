@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict'
-import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import pixelmatch from 'pixelmatch'
 import { chromium } from 'playwright'
 import { PNG } from 'pngjs'
 
+// Compares a genuine Nuxt build against the ORIGINAL static WordPress/Avada site by
+// rendered pixels (the Nuxt build is a real Vue SSR render, so its HTML bytes differ
+// from the WordPress output even when the rendering is identical). Interactions are
+// compared separately in record-interactions.mjs.
 const originalUrl = process.env.ORIGINAL_URL || 'http://localhost:5173'
 const nuxtUrl = process.env.NUXT_URL || 'http://localhost:5174'
 const outputDir = path.resolve('artifacts/verification')
@@ -20,24 +23,11 @@ const cases = [
 ]
 
 const pageRoutes = [
-  '/',
-  '/about/',
-  '/cart-2/',
-  '/checkout-2/',
-  '/contact/',
-  '/contact-2/',
-  '/shop-2/',
-  '/product/bpc-157-and-tb-500/',
-  '/product/glow-70mg/',
-  '/product/nad-1000mg/',
-  '/product/retatrutide-20mg-rd-only/',
-  '/product/tirzepatide/',
+  '/', '/about/', '/cart-2/', '/checkout-2/', '/contact/', '/contact-2/', '/shop-2/',
+  '/product/bpc-157-and-tb-500/', '/product/glow-70mg/', '/product/nad-1000mg/',
+  '/product/retatrutide-20mg-rd-only/', '/product/tirzepatide/',
   '/product/where-to-buy-retatrutide/',
 ]
-
-function sha256(value) {
-  return createHash('sha256').update(value).digest('hex')
-}
 
 async function settle(page) {
   await page.waitForLoadState('domcontentloaded')
@@ -70,7 +60,21 @@ async function settle(page) {
     undefined,
     { timeout: 15000 },
   )
-  await page.waitForTimeout(1000)
+  // Freeze CSS animations/transitions so the marquee, sliders and hover states land
+  // on the identical frame for both the original and Nuxt captures. Without this the
+  // marquee/hero updates non-deterministically (a harness flakiness, not a render diff).
+  await page.addStyleTag({ content: `
+    *, *::before, *::after {
+      animation-play-state: paused !important;
+      transition: none !important;
+      caret-color: transparent !important;
+    }
+  ` })
+  await page.evaluate(() => new Promise(r => {
+    // force a paint after freezing
+    requestAnimationFrame(() => requestAnimationFrame(r))
+  }))
+  await page.waitForTimeout(800)
 }
 
 async function capture(browser, baseUrl, testCase, suffix) {
@@ -133,19 +137,11 @@ for (const route of pageRoutes) {
     fetch(`${originalUrl}${route}`),
     fetch(`${nuxtUrl}${route}`),
   ])
-  const [originalBody, nuxtBody] = await Promise.all([
-    originalResponse.arrayBuffer(),
-    nuxtResponse.arrayBuffer(),
-  ])
-  const originalHash = sha256(Buffer.from(originalBody))
-  const nuxtHash = sha256(Buffer.from(nuxtBody))
   responseChecks.push({
     route,
     originalStatus: originalResponse.status,
     nuxtStatus: nuxtResponse.status,
-    originalHash,
-    nuxtHash,
-    identical: originalResponse.status === nuxtResponse.status && originalHash === nuxtHash,
+    statusMatch: originalResponse.status === nuxtResponse.status,
   })
 }
 
@@ -173,10 +169,11 @@ const report = {
   generatedAt: new Date().toISOString(),
   originalUrl,
   nuxtUrl,
+  method: 'pixel-perfect rendering (genuine Nuxt SSR; HTML bytes are not compared)',
   responseChecks,
   screenshots,
   passed:
-    responseChecks.every(check => check.identical) &&
+    responseChecks.every(check => check.statusMatch) &&
     screenshots.every(screenshot => screenshot.mismatchedPixels === 0),
 }
 
