@@ -59,7 +59,7 @@ const lines = []
 lines.push('<script setup lang="ts">')
 lines.push('// SiteFooter: reusable Avada footer. Structure and link menus are shared;')
 lines.push('// the Cloudflare email-protection hash is the only per-page difference.')
-lines.push("const props = withDefaults(defineProps<{ emailHash?: string }>(), { emailHash: '" + defaultHash + "' })")
+lines.push("const props = withDefaults(defineProps<{ emailHash?: string; copyrightStyle?: string }>(), { emailHash: '" + defaultHash + "', copyrightStyle: '' })")
 lines.push('')
 lines.push('function decodeCfEmail(h) {')
 lines.push("  let r = parseInt(h.slice(0, 2), 16), o = h.slice(2), s = ''")
@@ -80,7 +80,14 @@ lines.push('onMounted(initEmail)')
 lines.push('</script>')
 lines.push('')
 lines.push('<template>')
-lines.push(footer)
+// The copyright bar (<div class="fusion-fullwidth ... fusion-builder-row-14 ...">)
+// has per-page padding. Drive it via the copyrightStyle prop so each page can pass
+// its own --awb-padding-top/bottom and match the original layout exactly.
+const copyrightPatch = footer.replace(
+  /(<div class="fusion-fullwidth fullwidth-box fusion-builder-row-14[^"]*"[^>]*?)(style="[^"]*")/,
+  '$1:style="copyrightStyle" $2',
+)
+lines.push(copyrightPatch)
 lines.push('</template>')
 
 fs.writeFileSync('app/components/layout/SiteFooter.vue', lines.join('\n'))

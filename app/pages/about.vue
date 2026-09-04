@@ -5,6 +5,7 @@ import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 
+
 const payload = {
   "title": "About - Terui Health care",
   "meta": [
@@ -437,7 +438,7 @@ your vegan retreat!</h3></div></div></div></div><div class="fusion-text fusion-t
 				
 				
 								
-					  <SiteFooter :email-hash="'2c5f4d40495f6c4d4040595a454f4d5e49024f4341'"/>
+					  <SiteFooter :email-hash="'2c5f4d40495f6c4d4040595a454f4d5e49024f4341'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

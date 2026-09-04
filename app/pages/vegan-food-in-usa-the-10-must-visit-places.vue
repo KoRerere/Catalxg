@@ -5,6 +5,7 @@ import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 
+
 const payload = {
   "title": "Vegan food in USA, The 10 must visit places - Terui Health care",
   "meta": [
@@ -508,7 +509,7 @@ useHead(payload)
 				
 				
 								
-					  <SiteFooter :email-hash="'0172606d647241606d6d747768626073642f626e6c'"/>
+					  <SiteFooter :email-hash="'0172606d647241606d6d747768626073642f626e6c'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

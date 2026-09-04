@@ -6,6 +6,7 @@ import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 import ProductCard from '~/components/product/ProductCard.vue'
 const products = [{"title":"NAD+ 1,000mg","price":"169.00","href":"/product/nad-1000mg/","pid":"","image":"Terui_NAD-scaled.jpg"},{"title":"BPC-157 & TB-500 40mg (R&D Only)","price":"129.99","href":"/product/bpc-157-and-tb-500/","pid":"","image":"68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png"},{"title":"Tirzepatide 40mg (R&D Only)","price":"119.99","href":"/product/tirzepatide/","pid":"","image":"68c1601181d8523257133acd_Tirzepatide-3.jpg"}]
+const productsGrid1 = [{"title":"NAD+ 1,000mg","price":"169.00","href":"/product/nad-1000mg/","pid":"","image":"Terui_NAD-scaled.jpg"},{"title":"BPC-157 & TB-500 40mg (R&D Only)","price":"129.99","href":"/product/bpc-157-and-tb-500/","pid":"","image":"68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png"},{"title":"Tirzepatide 40mg (R&D Only)","price":"119.99","href":"/product/tirzepatide/","pid":"","image":"68c1601181d8523257133acd_Tirzepatide-3.jpg"}]
 const payload = {
   "title": "Glow 70mg (R&amp;D Only) - Terui Health care",
   "meta": [
@@ -818,7 +819,7 @@ Tracked 2 DAY UK Delivery.Research &amp; Development purposes only</p>
 
 
   <ProductCard
-    v-for="p in products"
+    v-for="p in productsGrid1"
     :key="p.pid"
     :title="p.title"
     :price="p.price"
@@ -836,7 +837,7 @@ Tracked 2 DAY UK Delivery.Research &amp; Development purposes only</p>
 				
 				
 								
-					  <SiteFooter :email-hash="'f784969b9284b7969b9b82819e94968592d994989a'"/>
+					  <SiteFooter :email-hash="'f784969b9284b7969b9b82819e94968592d994989a'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

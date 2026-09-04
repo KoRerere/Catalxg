@@ -5,6 +5,7 @@ import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 
+
 const payload = {
   "title": "priority meds reviews - Terui Health care",
   "meta": [
@@ -606,7 +607,7 @@ useHead(payload)
 				
 				
 								
-					  <SiteFooter :email-hash="'ddaebcb1b8ae9dbcb1b1a8abb4bebcafb8f3beb2b0'"/>
+					  <SiteFooter :email-hash="'ddaebcb1b8ae9dbcb1b1a8abb4bebcafb8f3beb2b0'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

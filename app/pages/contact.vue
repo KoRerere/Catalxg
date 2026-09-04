@@ -5,6 +5,7 @@ import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 
+
 const payload = {
   "title": "Contact - Terui Health care",
   "meta": [
@@ -431,7 +432,7 @@ United States</p>
 				
 				
 								
-					  <SiteFooter :email-hash="'592a38353c2a193835352c2f303a382b3c773a3634'"/>
+					  <SiteFooter :email-hash="'592a38353c2a193835352c2f303a382b3c773a3634'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

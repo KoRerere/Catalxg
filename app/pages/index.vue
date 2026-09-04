@@ -6,6 +6,7 @@ import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 import ProductCard from '~/components/product/ProductCard.vue'
 const products = [{"title":"NAD+ 1,000mg","price":"169.00","href":"/product/nad-1000mg/","pid":"3664","image":"Terui_NAD-scaled.jpg"},{"title":"Glow 70mg (R&D Only)","price":"89.99","href":"/product/glow-70mg/","pid":"3456","image":"68c1536f91f1bf8bc2347d1e_Glow-1.jpg"},{"title":"BPC-157 & TB-500 40mg (R&D Only)","price":"129.99","href":"/product/bpc-157-and-tb-500/","pid":"3447","image":"68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png"},{"title":"Retatrutide 20mg (R&D Only)","price":"139.99","href":"/product/retatrutide-20mg-rd-only/","pid":"3450","image":"68c153351d1a646053b66e98_Retatrutide-5MG-With-Pen-1-scaled.jpg"},{"title":"Retatrutide 40mg (R&D Only)","price":"219.99","href":"/product/where-to-buy-retatrutide/","pid":"3444","image":"68c15352ea197e6dc6d9a3da_Retat-Front-DR-Background-Pen-1-scaled.jpg"}]
+const productsGrid1 = [{"title":"NAD+ 1,000mg","price":"169.00","href":"/product/nad-1000mg/","pid":"3664","image":"Terui_NAD-scaled.jpg"},{"title":"Glow 70mg (R&D Only)","price":"89.99","href":"/product/glow-70mg/","pid":"3456","image":"68c1536f91f1bf8bc2347d1e_Glow-1.jpg"},{"title":"BPC-157 & TB-500 40mg (R&D Only)","price":"129.99","href":"/product/bpc-157-and-tb-500/","pid":"3447","image":"68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png"}]
 const payload = {
   "title": "Terui Healthcare UK | Trusted Peptide &amp; Weight Loss Experts",
   "meta": [
@@ -455,7 +456,7 @@ useHead(payload)
 
 
   <ProductCard
-    v-for="p in products"
+    v-for="p in productsGrid1"
     :key="p.pid"
     :title="p.title"
     :price="p.price"
@@ -576,7 +577,7 @@ Just precision dosing.</strong></h1></h2></div><div class="fusion-title title fu
 				
 				
 								
-					  <SiteFooter :email-hash="'c6b5a7aaa3b586a7aaaab3b0afa5a7b4a3e8a5a9ab'"/>
+					  <SiteFooter :email-hash="'c6b5a7aaa3b586a7aaaab3b0afa5a7b4a3e8a5a9ab'" :copyright-style="'padding-top:24px;padding-bottom:28px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

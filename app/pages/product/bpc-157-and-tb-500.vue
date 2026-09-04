@@ -6,6 +6,7 @@ import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 import ProductCard from '~/components/product/ProductCard.vue'
 const products = [{"title":"NAD+ 1,000mg","price":"169.00","href":"/product/nad-1000mg/","pid":"","image":"Terui_NAD-scaled.jpg"},{"title":"Glow 70mg (R&D Only)","price":"89.99","href":"/product/glow-70mg/","pid":"","image":"68c1536f91f1bf8bc2347d1e_Glow-1.jpg"},{"title":"Tirzepatide 40mg (R&D Only)","price":"119.99","href":"/product/tirzepatide/","pid":"","image":"68c1601181d8523257133acd_Tirzepatide-3.jpg"}]
+const productsGrid1 = [{"title":"NAD+ 1,000mg","price":"169.00","href":"/product/nad-1000mg/","pid":"","image":"Terui_NAD-scaled.jpg"},{"title":"Glow 70mg (R&D Only)","price":"89.99","href":"/product/glow-70mg/","pid":"","image":"68c1536f91f1bf8bc2347d1e_Glow-1.jpg"},{"title":"Tirzepatide 40mg (R&D Only)","price":"119.99","href":"/product/tirzepatide/","pid":"","image":"68c1601181d8523257133acd_Tirzepatide-3.jpg"}]
 const payload = {
   "title": "BPC-157 &amp; TB-500 40mg (R&amp;D Only) - Terui Health care",
   "meta": [
@@ -802,7 +803,7 @@ Research information sheet <a href="https://synedicas.com/" target="_blank" rel=
 
 
   <ProductCard
-    v-for="p in products"
+    v-for="p in productsGrid1"
     :key="p.pid"
     :title="p.title"
     :price="p.price"
@@ -820,7 +821,7 @@ Research information sheet <a href="https://synedicas.com/" target="_blank" rel=
 				
 				
 								
-					  <SiteFooter :email-hash="'582b39343d2b183934342d2e313b392a3d763b3735'"/>
+					  <SiteFooter :email-hash="'582b39343d2b183934342d2e313b392a3d763b3735'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

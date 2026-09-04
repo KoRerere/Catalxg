@@ -1,50 +1,47 @@
 <script setup lang="ts">
-// ProductCard: reusable data-driven Avada product card.
-defineProps<{
-  title: string
+// ProductCard: reusable data-driven Avada product card (full original markup).
+import { computed } from 'vue'
+const props = withDefaults(defineProps<{
+  title?: string
   price?: string
   image?: string
   href?: string
   category?: string
   productId?: string | number
-}>()
+}>(), { title: '', price: '', image: '', href: '#', category: 'Uncategorized', productId: '' })
+
+const cartHref = computed(() => (props.href && props.href !== '#' ? props.href : '/shop-2/') + '?add-to-cart=' + (props.productId || ''))
 </script>
 
 <template>
-  <li class="fusion-layout-column fusion_builder_column fusion-flex-column post-card fusion-grid-column fusion-post-cards-grid-column product-grid-view product type-product" style="--awb-padding-top:8px;--awb-padding-right:8px;--awb-padding-bottom:8px;--awb-padding-left:8px;--awb-overflow:hidden;--awb-bg-color:var(--awb-color1);--awb-bg-size:cover;--awb-border-color:var(--awb-color3);--awb-border-top:1px;--awb-border-right:1px;--awb-border-bottom:1px;--awb-border-left:1px;--awb-border-radius:10px 10px 10px 10px;">
-    <div class="fusion-column-wrapper fusion-flex-justify-content-flex-start fusion-content-layout-column">
-      <div class="fusion-classic-product-image-wrapper fusion-woo-product-image fusion-post-card-image has-aspect-ratio images" data-layout="rollover" style="--awb-border-radius-top-left:8px;--awb-border-radius-top-right:8px;--awb-border-radius-bottom-right:8px;--awb-border-radius-bottom-left:8px;--awb-aspect-ratio:1.25;">
-        <div class="woocommerce-product-gallery__image fusion-image-wrapper" aria-haspopup="true">
-          <div class="fusion-woo-badges-wrapper"></div>
-          <img decoding="async" :src="image || '/wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png'" class="attachment-full size-full lazyload wp-post-image" alt="" loading="lazy" />
-          <div class="fusion-rollover">
-            <div class="fusion-rollover-content">
-              <div class="cart-loading"><a href="/cart-2/"><i class="awb-icon-spinner" aria-hidden="true"></i><div class="view-cart">View Cart</div></a></div>
-              <a class="fusion-link-wrapper" :href="href || '#'" :aria-label="title"></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="fusion-meta-tb floated" style="--awb-border-bottom:0px;--awb-border-top:0px;--awb-height:48px;--awb-font-size:14px;--awb-margin:16px;">
-        <span class="fusion-tb-categories"><a href="#" rel="tag">{{ category || 'Uncategorized' }}</a></span>
-        <span class="fusion-meta-tb-sep"></span>
-      </div>
-      <div class="fusion-title fusion-sep-none fusion-title-text fusion-title-size-five" style="--awb-margin-top:0px;--awb-margin-right:16px;--awb-margin-bottom:6px;--awb-margin-left:16px;--awb-link-color:var(--awb-color8);">
-        <h5 class="fusion-title-heading title-heading-left" style="margin:0;"><a :href="href || '#'" class="awb-custom-text-color awb-custom-text-hover-color" target="_self">{{ title }}</a></h5>
-      </div>
-      <div class="fusion-woo-price-tb sale-position-right floated has-badge badge-position-right" style="--awb-margin-bottom:4px;--awb-margin-left:16px;--awb-margin-right:16px;">
-        <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#163;</span>{{ price || '0.00' }}</bdi></span></span>
-      </div>
-      <div class="fusion-separator fusion-full-width-sep" style="align-self:center;margin-left:auto;margin-right:auto;flex-grow:1;width:100%;"></div>
-      <div class="fusion-builder-row fusion-builder-row-inner fusion-row fusion-flex-align-items-flex-start fusion-flex-content-wrap">
-        <div class="fusion-layout-column fusion_builder_column_inner fusion-flex-column" style="--awb-padding-top:8px;--awb-padding-right:16px;--awb-padding-bottom:8px;--awb-padding-left:16px;--awb-width-large:100%;">
-          <div class="fusion-column-wrapper fusion-column-has-shadow fusion-flex-justify-content-flex-start fusion-content-layout-column">
-            <div class="fusion-woo-cart fusion-post-card-cart awb-add-to-cart-style-button awb-product-style-link">
-              <a :href="(href || '#') + '?add-to-cart=' + (productId || '3447')" aria-describedby="woocommerce_loop_add_to_cart_link_describedby" data-quantity="1" class="fusion-post-card-cart-add-to-cart button-default add_to_cart_button ajax_add_to_cart" :data-product_id="String(productId || '3447')" data-product_sku="" rel="nofollow"><i class="awb-vegan-storecart button-icon-left" aria-hidden="true"></i>Add to cart</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </li>
+<li class="fusion-layout-column fusion_builder_column fusion-builder-column-9 fusion-flex-column post-card fusion-grid-column fusion-post-cards-grid-column product-grid-view product type-product" style="--awb-padding-top:8px;--awb-padding-right:8px;--awb-padding-bottom:8px;--awb-padding-left:8px;--awb-overflow:hidden;--awb-bg-color:var(--awb-color1);--awb-bg-color-hover:var(--awb-color1);--awb-bg-size:cover;--awb-border-color:var(--awb-color3);--awb-border-top:1px;--awb-border-right:1px;--awb-border-bottom:1px;--awb-border-left:1px;--awb-border-radius:10px 10px 10px 10px;--awb-flex-grow:0;--awb-flex-shrink:0;--awb-flex-grow-medium:0;--awb-flex-shrink-medium:0;--awb-flex-grow-small:0;--awb-flex-shrink-small:0;"><div class="fusion-column-wrapper fusion-flex-justify-content-flex-start fusion-content-layout-column"><div class="fusion-classic-product-image-wrapper fusion-woo-product-image fusion-post-card-image fusion-post-card-image-1 has-aspect-ratio images" data-layout="rollover" style="--awb-border-radius-top-left:8px;--awb-border-radius-top-right:8px;--awb-border-radius-bottom-right:8px;--awb-border-radius-bottom-left:8px;--awb-aspect-ratio:1.25;"><div  class="woocommerce-product-gallery__image fusion-image-wrapper" aria-haspopup="true">
+				<div class="fusion-woo-badges-wrapper">
+</div><img decoding="async" width="1536" height="1024" src="/wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png" class="attachment-full size-full lazyload wp-post-image" alt="" srcset="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%271536%27%20height%3D%271024%27%20viewBox%3D%270%200%201536%201024%27%3E%3Crect%20width%3D%271536%27%20height%3D%271024%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E" data-orig-src="/wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png" data-srcset="/wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1-200x133.png 200w, /wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1-400x267.png 400w, /wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1-600x400.png 600w, /wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1-800x533.png 800w, /wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1-1200x800.png 1200w, /wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png 1536w" data-sizes="auto" data-caption="" data-:src="image || ''" data-large_image="/wp-content/uploads/2025/11/68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png" data-large_image_width="1536" data-large_image_height="1024" /><div class="fusion-rollover">
+	<div class="fusion-rollover-content">
+
+				
+		
+								
+								
+								<div class="cart-loading">
+				<a href="/cart-2/">
+					<i class="awb-icon-spinner" aria-hidden="true"></i>
+					<div class="view-cart">View Cart</div>
+				</a>
+			</div>
+		
+								
+						
+												<a class="fusion-link-wrapper" :href="href" :aria-label="title"></a>
+	</div>
+</div>
+</div>
+</div><div class="fusion-meta-tb fusion-meta-tb-1 floated" style="--awb-border-bottom:0px;--awb-border-top:0px;--awb-height:48px;--awb-font-size:14px;--awb-margin-bottom:0px;--awb-margin-left:16px;--awb-margin-right:16px;--awb-margin-top:16px;--awb-alignment-medium:flex-start;--awb-alignment-small:flex-start;"><span class="fusion-tb-categories"><a href="/product-category/uncategorized/" rel="tag">{{ category }}</a></span><span class="fusion-meta-tb-sep"></span></div><div class="fusion-title title fusion-title-2 fusion-sep-none fusion-title-text fusion-title-size-five" style="--awb-margin-top:0px;--awb-margin-right:16px;--awb-margin-bottom:6px;--awb-margin-left:16px;--awb-margin-top-small:0px;--awb-margin-right-small:16px;--awb-margin-left-small:16px;--awb-link-color:var(--awb-color8);"><h5 class="fusion-title-heading title-heading-left" style="margin:0;"><a :href="href" class="awb-custom-text-color awb-custom-text-hover-color" target="_self">{{ title }}</a></h5></div><div class="fusion-text fusion-text-7 fusion-text-no-margin" style="--awb-content-alignment:left;--awb-font-size:var(--awb-typography5-font-size);--awb-line-height:1.7;--awb-letter-spacing:var(--awb-typography5-letter-spacing);--awb-text-transform:var(--awb-typography5-text-transform);--awb-margin-top:4px;--awb-margin-right:16px;--awb-margin-bottom:16px;--awb-margin-left:16px;--awb-text-font-family:var(--awb-typography5-font-family);--awb-text-font-weight:var(--awb-typography5-font-weight);--awb-text-font-style:var(--awb-typography5-font-style);"></div><div class="fusion-woo-price-tb fusion-woo-price-tb-1 sale-position-right floated has-badge badge-position-right" style="--awb-margin-bottom:4px;--awb-margin-left:16px;--awb-margin-right:16px;--awb-margin-top:0px;--awb-price-font-size:var(--awb-typography3-font-size);--awb-price-letter-spacing:var(--awb-typography3-letter-spacing);--awb-sale-font-size:14px;--awb-badge-font-size:14px;--awb-badge-border-size:0px;--awb-price-color:hsla(calc(var(--awb-color4-h) + 270),calc(var(--awb-color4-s) + 20%),calc(var(--awb-color4-l) + 10%),var(--awb-color4-a));--awb-sale-color:hsla(var(--awb-color6-h),var(--awb-color6-s),var(--awb-color6-l),calc(var(--awb-color6-a) - 50%));--awb-badge-text-color:hsla(var(--awb-color5-h),var(--awb-color5-s),calc(var(--awb-color5-l) - 10%),var(--awb-color5-a));--awb-badge-bg-color:hsla(var(--awb-color5-h),var(--awb-color5-s),var(--awb-color5-l),calc(var(--awb-color5-a) - 90%));--awb-badge-border-color:var(--awb-color6);--awb-price-line-height:var(--awb-typography3-line-height);--awb-price-text-transform:var(--awb-typography3-text-transform);--awb-border-radius:0px 0px 0px 0px;--awb-price-font-family:var(--awb-typography3-font-family);--awb-price-font-weight:var(--awb-typography3-font-weight);--awb-price-font-style:var(--awb-typography3-font-style);--awb-sale-font-family:inherit;--awb-sale-font-style:normal;--awb-sale-font-weight:400;--awb-stock-font-family:inherit;--awb-stock-font-style:normal;--awb-stock-font-weight:400;--awb-badge-font-family:inherit;--awb-badge-font-style:normal;--awb-badge-font-weight:400;"><p class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol" translate="no">&pound;</span>{{ price }}</bdi></span></p>
+</div><div class="fusion-separator fusion-full-width-sep" style="align-self: center;margin-left: auto;margin-right: auto;flex-grow:1;width:100%;"></div><div class="fusion-builder-row fusion-builder-row-inner fusion-row fusion-flex-align-items-flex-start fusion-flex-content-wrap" style="width:104% !important;max-width:104% !important;margin-left: calc(-4% / 2 );margin-right: calc(-4% / 2 );"><div class="fusion-layout-column fusion_builder_column_inner fusion-builder-nested-column-5 fusion_builder_column_inner_1_1 1_1 fusion-flex-column" style="--awb-padding-top:8px;--awb-padding-right:16px;--awb-padding-bottom:8px;--awb-padding-left:16px;--awb-bg-size:cover;--awb-width-large:100%;--awb-margin-top-large:0px;--awb-spacing-right-large:1.92%;--awb-margin-bottom-large:0px;--awb-spacing-left-large:1.92%;--awb-width-medium:100%;--awb-order-medium:0;--awb-spacing-right-medium:1.92%;--awb-spacing-left-medium:1.92%;--awb-width-small:100%;--awb-order-small:0;--awb-spacing-right-small:1.92%;--awb-spacing-left-small:1.92%;"><div class="fusion-column-wrapper fusion-column-has-shadow fusion-flex-justify-content-flex-start fusion-content-layout-column"><div class="fusion-woo-cart fusion-post-card-cart awb-variation-layout-stacked awb-variation-clear-hide awb-label-yes awb-add-to-cart-style-button awb-product-style-link" style="--awb-button-margin-top:16px;--awb-button-border-top:1px;--awb-button-border-right:1px;--awb-button-border-bottom:1px;--awb-button-border-left:1px;--awb-button-color:var(--awb-color8);--awb-button-border-color:var(--awb-color3);--awb-button-border-color-hover:var(--awb-color5);--awb-button-gradient-top:var(--awb-color1);--awb-button-gradient-bottom:var(--awb-color1);--awb-button-gradient-top-hover:var(--awb-color5);--awb-button-gradient-bottom-hover:var(--awb-color5);--awb-label-font-size:var(--awb-typography5-font-size);--awb-label-line-height:var(--awb-typography5-line-height);--awb-label-letter-spacing:var(--awb-typography5-letter-spacing);--awb-label-text-transform:var(--awb-typography5-text-transform);--awb-select-height:32px;--awb-select-font-size:13px;--awb-border-radius-top-left:4px;--awb-border-radius-top-right:4px;--awb-border-radius-bottom-right:4px;--awb-border-radius-bottom-left:4px;--awb-swatch-margin-top:4px;--awb-swatch-border-color:var(--awb-color3);--awb-swatch-border-color-active:var(--awb-color6);--awb-color-swatch-height:29px;--awb-color-swatch-padding-top:4px;--awb-color-swatch-padding-right:4px;--awb-color-swatch-padding-bottom:4px;--awb-color-swatch-padding-left:4px;--awb-color-swatch-border-radius-top-left:100%;--awb-color-swatch-border-radius-top-right:100%;--awb-color-swatch-border-radius-bottom-right:100%;--awb-color-swatch-border-radius-bottom-left:100%;--awb-button-swatch-padding-top:6px;--awb-button-swatch-padding-right:14px;--awb-button-swatch-padding-bottom:6px;--awb-button-swatch-padding-left:14px;--awb-button-swatch-border-radius-top-left:4px;--awb-button-swatch-border-radius-top-right:4px;--awb-button-swatch-border-radius-bottom-right:4px;--awb-button-swatch-border-radius-bottom-left:4px;--awb-button-swatch-font-size:13px;--awb-button-swatch-color:hsla(var(--awb-color6-h),var(--awb-color6-s),calc(var(--awb-color6-l) + 20%),var(--awb-color6-a));--awb-button-swatch-color-active:var(--awb-color8);--awb-flex-direction:column;--awb-align-items:flex-start;--awb-button-flex-direction:column;--awb-button-align-items:stretch;--awb-button-a-justify-content:center;--awb-button-padding:17px 40px;--awb-button-line-height:21px;--awb-button-font-size:18px;--awb-label-typography-font-family:var(--awb-typography5-font-family);--awb-label-typography-font-weight:var(--awb-typography5-font-weight);--awb-label-typography-font-style:var(--awb-typography5-font-style);--awb-swatch-border-color-hover:hsla(var(--awb-color6-h),var(--awb-color6-s),var(--awb-color6-l),calc(var(--awb-color6-a) - 50%));--awb-color-swatch-width:29px;">														<div class="fusion-post-card-cart-button-wrapper">
+													<a :href="cartHref" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_3447" data-quantity="1" class="fusion-post-card-cart-add-to-cart button-default add_to_cart_button ajax_add_to_cart" :data-product_id="String(productId || '')" data-product_sku="" aria-label="Add to cart: &ldquo;BPC-157 &amp; TB-500 40mg (R&amp;D Only)&rdquo;" rel="nofollow"><i class="awb-vegan-storecart button-icon-left" aria-hidden="true"></i>Add to cart</a>	<span id="woocommerce_loop_add_to_cart_link_describedby_3447" class="screen-reader-text">
+			</span>
+					
+				
+									</div>
+					</div></div></div></div></div></li>
 </template>

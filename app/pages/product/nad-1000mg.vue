@@ -6,6 +6,7 @@ import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 import ProductCard from '~/components/product/ProductCard.vue'
 const products = [{"title":"Glow 70mg (R&D Only)","price":"89.99","href":"/product/glow-70mg/","pid":"","image":"68c1536f91f1bf8bc2347d1e_Glow-1.jpg"},{"title":"BPC-157 & TB-500 40mg (R&D Only)","price":"129.99","href":"/product/bpc-157-and-tb-500/","pid":"","image":"68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png"},{"title":"Tirzepatide 40mg (R&D Only)","price":"119.99","href":"/product/tirzepatide/","pid":"","image":"68c1601181d8523257133acd_Tirzepatide-3.jpg"}]
+const productsGrid1 = [{"title":"Glow 70mg (R&D Only)","price":"89.99","href":"/product/glow-70mg/","pid":"","image":"68c1536f91f1bf8bc2347d1e_Glow-1.jpg"},{"title":"BPC-157 & TB-500 40mg (R&D Only)","price":"129.99","href":"/product/bpc-157-and-tb-500/","pid":"","image":"68c1522d14a3f9e08f5e017b_BPC157-TB500-1.png"},{"title":"Tirzepatide 40mg (R&D Only)","price":"119.99","href":"/product/tirzepatide/","pid":"","image":"68c1601181d8523257133acd_Tirzepatide-3.jpg"}]
 const payload = {
   "title": "NAD+ 1,000mg - Terui Health care",
   "meta": [
@@ -714,7 +715,7 @@ Research information sheet</div>
 
 
   <ProductCard
-    v-for="p in products"
+    v-for="p in productsGrid1"
     :key="p.pid"
     :title="p.title"
     :price="p.price"
@@ -732,7 +733,7 @@ Research information sheet</div>
 				
 				
 								
-					  <SiteFooter :email-hash="'6310020f061023020f0f16150a000211064d000c0e'"/>
+					  <SiteFooter :email-hash="'6310020f061023020f0f16150a000211064d000c0e'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

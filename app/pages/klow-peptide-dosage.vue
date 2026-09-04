@@ -5,6 +5,7 @@ import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 
+
 const payload = {
   "title": "klow peptide dosage - Terui Health care",
   "meta": [
@@ -597,7 +598,7 @@ useHead(payload)
 				
 				
 								
-					  <SiteFooter :email-hash="'acdfcdc0c9dfeccdc0c0d9dac5cfcddec982cfc3c1'"/>
+					  <SiteFooter :email-hash="'acdfcdc0c9dfeccdc0c0d9dac5cfcddec982cfc3c1'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>

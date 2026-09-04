@@ -167,62 +167,88 @@ function componentize(s, products = []) {
     const f = grabBalanced(s, fStart)
     if (f) {
       const hash = f.match(/email-protection#([a-f0-9]+)/i)?.[1] || ''
-      s = s.slice(0, fStart) + `  <SiteFooter${hash ? ` :email-hash="'${hash}'"` : ''}/>` + s.slice(fStart + f.length)
+      // The copyright bar has per-page padding; extract --awb-padding-top/bottom.
+      const copyFull = [...f.matchAll(/<div class="fusion-fullwidth[^"]*"[^>]*style="([^"]*)"/g)].map(m => m[1])
+      const last = copyFull[copyFull.length - 1] || ''
+      const pt = (last.match(/--awb-padding-top:\s*([^;]+)/) || [])[1]
+      const pb = (last.match(/--awb-padding-bottom:\s*([^;]+)/) || [])[1]
+      const copyrightStyle = pt || pb ? `padding-top:${pt || '0px'};padding-bottom:${pb || '0px'};` : ''
+      s = s.slice(0, fStart) + `  <SiteFooter${hash ? ` :email-hash="'${hash}'"` : ''}${copyrightStyle ? ` :copyright-style="'${copyrightStyle}'"` : ''}/>` + s.slice(fStart + f.length)
     }
   }
   // 5) off-canvas panels: <div id="awb-oc-N" class="awb-off-canvas-wrap..."> -> <SiteOffCanvas/>
   s = replaceOffCanvas(s)
-  // 6) product card <li> in product grids -> <ProductCard v-for>
-  s = replaceProductCards(s, products)
+  // 6) product card <li> in product grids -> <ProductCard v-for> (per-grid slice)
+  const pr = replaceProductCards(s, products)
+  _gridVars = pr.gridVars
+  s = pr.s
   return s
 }
+let _gridVars = []
 
-// Replace the product-card <li>s inside the FIRST product grid <ul> with a single
-// <ProductCard v-for>. Other product grids (e.g. related products) are left as-is to
-// avoid duplicating cards across the row layouts.
+// Replace the product-card <li>s inside EVERY product grid <ul> with a per-grid
+// <ProductCard v-for>, slicing the shared products array by how many product <li>s
+// that grid originally contained. This preserves multi-grid layouts (e.g. the home
+// best-sellers splits 5 cards across two grids: 3 + 2) without duplicating cards.
 function replaceProductCards(s, products) {
-  if (!products.length) return s
-  // locate the first product grid ul that contains real product cards
-  let gridStart = -1
-  let gridEnd = -1
+  if (!products.length) return { s, gridVars: [] }
+  // Collect (start,end,productCount) for every product grid ul that has cards.
+  const grids = []
   const ulRe = /<ul\b[^>]*>/g
   let um
   while ((um = ulRe.exec(s))) {
-    // find the balanced end of this ul
     let depth = 0
-    const re = /<\/?ul\b[^>]*>/g
+    const pRe = /<\/?ul\b[^>]*>/g
     let mm
     let end = -1
-    re.lastIndex = um.index
-    while ((mm = re.exec(s))) {
+    pRe.lastIndex = um.index
+    while ((mm = pRe.exec(s))) {
       if (mm.index < um.index) continue
       if (mm[0].startsWith('</ul')) depth--
       else depth++
       if (depth === 0) { end = mm.index + mm[0].length; break }
     }
+    if (end < 0) continue
     const block = s.slice(um.index, end)
-    const hasProduct = /<li\b[^>]*class="[^"]*product[^"]*"/.test(block) && block.includes('title-heading')
-    if (hasProduct) { gridStart = um.index; gridEnd = end; break }
+    if (!/<li\b[^>]*class="[^"]*product[^"]*"/.test(block)) { ulRe.lastIndex = um.index + 1; continue }
+    const prodCount = (block.match(/<li\b[^>]*class="[^"]*product[^"]*"[^>]*>/g) || []).length
+    // Only treat as a product-card grid when it has several full standard cards
+    // (>= 3). Single-card compact grids (e.g. the related-product spot in a product
+    // page) keep their original markup to avoid height/layout drift.
+    if (!prodCount || prodCount < 3) { ulRe.lastIndex = um.index + 1; continue }
+    grids.push({ start: um.index, end, count: prodCount })
+    ulRe.lastIndex = end
   }
-  if (gridStart < 0) return s
-  const vfor = `  <ProductCard
-    v-for="p in products"
+  if (!grids.length) return { s, gridVars: [] }
+  // Slice products across grids in order and expose each slice as a named variable.
+  let idx = 0
+  const gridVars = []
+  for (let gi = 0; gi < grids.length; gi++) {
+    const slice = products.slice(idx, idx + grids[gi].count)
+    idx += grids[gi].count
+    const name = `productsGrid${gi + 1}`
+    gridVars.push({ name, arr: slice })
+    grids[gi].varName = name
+  }
+  const vforFor = (name) => (name ? `  <ProductCard
+    v-for="p in ${name}"
     :key="p.pid"
     :title="p.title"
     :price="p.price"
     :image="p.image"
     :href="p.href"
     :product-id="p.pid"
-  />`
-  // replace the grid's inner content: keep the <ul> wrapper, drop its original
-  // product <li>s, render the v-for ProductCards, then re-balance.
-  const openTag = s.slice(gridStart, s.indexOf('>', gridStart) + 1)
-  const inner = s.slice(gridStart + openTag.length, gridEnd - '</ul>'.length)
-  // remove product <li>s from inner (they are replaced by v-for), keep any
-  // non-product <li> (e.g. a green feature card that lives inside the grid).
-  const cleanedInner = inner.replace(/<li\b[^>]*class="[^"]*product[^"]*"[^>]*>[\s\S]*?<\/li>/g, '')
-  s = s.slice(0, gridStart) + openTag + cleanedInner + '\n' + vfor + '\n' + '</ul>' + s.slice(gridEnd)
-  return s
+  />` : '')
+  for (let gi = grids.length - 1; gi >= 0; gi--) {
+    const { start, end, varName } = grids[gi]
+    const openTag = s.slice(start, s.indexOf('>', start) + 1)
+    const innerStart = start + openTag.length
+    const innerEnd = end - '</ul>'.length
+    const inner = s.slice(innerStart, innerEnd)
+    const cleanedInner = inner.replace(/<li\b[^>]*class="[^"]*product[^"]*"[^>]*>[\s\S]*?<\/li>/g, '')
+    s = s.slice(0, start) + openTag + cleanedInner + '\n' + vforFor(varName) + '\n</ul>' + s.slice(end)
+  }
+  return { s, gridVars }
 }
 
 // Decode the handful of HTML entities Avada emits in product titles/categories.
@@ -354,9 +380,11 @@ function buildPageSfc(file, route) {
   if (template.includes('<SiteOffCanvas')) imports.push(`import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'`)
   if (template.includes('<ProductCard')) imports.push(`import ProductCard from '~/components/product/ProductCard.vue'`)
   const productsStr = products.length ? `const products = ${JSON.stringify(products)}` : ''
+  const gridVarsStr = _gridVars.map(gv => `const ${gv.name} = ${JSON.stringify(gv.arr)}`).join('\n')
   return `<script setup lang="ts">
 ${imports.join('\n')}
 ${productsStr}
+${gridVarsStr}
 const payload = ${payloadStr}
 ${extraBodyAttrs}
 useHead(payload)

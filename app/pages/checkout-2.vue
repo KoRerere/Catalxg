@@ -5,6 +5,7 @@ import SiteHeader from '~/components/layout/SiteHeader.vue'
 import SiteFooter from '~/components/layout/SiteFooter.vue'
 import SiteOffCanvas from '~/components/layout/SiteOffCanvas.vue'
 
+
 const payload = {
   "title": "Cart - Terui Health care",
   "meta": [
@@ -478,7 +479,7 @@ useHead(payload)
 				
 				
 								
-					  <SiteFooter :email-hash="'d2a1b3beb7a192b3bebea7a4bbb1b3a0b7fcb1bdbf'"/>
+					  <SiteFooter :email-hash="'d2a1b3beb7a192b3bebea7a4bbb1b3a0b7fcb1bdbf'" :copyright-style="'padding-top:32px;padding-bottom:44px;'"/>
 																</div> 
 		</div> 
 				<a class="fusion-one-page-text-link fusion-page-load-link" tabindex="-1" href="#" aria-hidden="true">Page load link</a>
