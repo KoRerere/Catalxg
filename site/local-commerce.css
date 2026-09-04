@@ -639,19 +639,3 @@ a:active {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
-
-/* 首页 hero 首屏增高：给 hero（含 hero-pent 产品盒）区加更大的上下留白 */
-.fusion-builder-row-2:has(.hero-pent) {
-  --awb-padding-top: 56px !important;
-  --awb-padding-bottom: 56px !important;
-  padding-top: 56px !important;
-  padding-bottom: 56px !important;
-}
-@media (max-width: 1100px) {
-  .fusion-builder-row-2:has(.hero-pent) {
-    --awb-padding-top: 48px !important;
-    --awb-padding-bottom: 48px !important;
-    padding-top: 48px !important;
-    padding-bottom: 48px !important;
-  }
-}
