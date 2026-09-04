@@ -639,3 +639,8 @@ a:active {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
+
+/* 首页 hero 首屏：只拉高黑色背景（底部扩展），内容位置/高度保持不变 */
+.fusion-builder-row-2:has(.hero-pent) {
+  padding-bottom: 64px !important;
+}
